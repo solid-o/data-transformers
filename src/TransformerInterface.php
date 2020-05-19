@@ -25,7 +25,7 @@ interface TransformerInterface
      *
      * @return mixed The transformed value
      *
-     * @throws TransformationFailedException when the transformation fails
+     * @throws TransformationFailedException when the transformation fails.
      */
     public function transform($value);
 }
