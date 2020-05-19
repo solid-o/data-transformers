@@ -38,10 +38,12 @@ class TransformerExtension implements ExtensionInterface
                 throw new LogicException(sprintf('Transformer class "%s" does not exist.', $transform->transformer));
             }
 
-            $proxyBuilder->addPropertyInterceptor(
-                $property->getName(),
-                new Interceptor(sprintf('$transformer = new \%s(); $value = $transformer->transform($value);', $transform->transformer))
-            );
+            $proxyBuilder->addPropertyInterceptor($property->getName(), new Interceptor($this->generateCode($transform->transformer)));
         }
+    }
+
+    protected function generateCode(string $transformer): string
+    {
+        return sprintf('$transformer = new \%s(); $value = $transformer->transform($value);', $transformer);
     }
 }
