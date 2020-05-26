@@ -38,12 +38,35 @@ class TransformerExtension implements ExtensionInterface
                 throw new LogicException(sprintf('Transformer class "%s" does not exist.', $transform->transformer));
             }
 
-            $proxyBuilder->addPropertyInterceptor($property->getName(), new Interceptor($this->generateCode($transform->transformer)));
+            $proxyBuilder->addPropertyInterceptor($property->getName(), new Interceptor($this->generateCode($transform->transformer, 'value')));
+        }
+
+        foreach ($proxyBuilder->class->getMethods() as $reflectionMethod) {
+            if ($reflectionMethod->isPrivate() || $reflectionMethod->isFinal()) {
+                continue;
+            }
+
+            if ($reflectionMethod->getNumberOfParameters() !== 1) {
+                throw new LogicException(sprintf('Method %s requires %d parameters, but Transform annotation can be used only on single-argument method.', $reflectionMethod->getName(), $reflectionMethod->getNumberOfParameters()));
+            }
+
+            $transform = $this->reader->getMethodAnnotation($reflectionMethod, Transform::class);
+            if ($transform === null) {
+                continue;
+            }
+
+            assert($transform instanceof Transform);
+
+            if (! class_exists($transform->transformer)) {
+                throw new LogicException(sprintf('Transformer class "%s" does not exist.', $transform->transformer));
+            }
+
+            $proxyBuilder->addMethodInterceptor($reflectionMethod->getName(), new Interceptor($this->generateCode($transform->transformer, $reflectionMethod->getParameters()[0]->getName())));
         }
     }
 
-    protected function generateCode(string $transformer): string
+    protected function generateCode(string $transformer, string $parameterName): string
     {
-        return sprintf('$transformer = new \%s(); $value = $transformer->transform($value);', $transformer);
+        return sprintf('$transformer = new \%s(); $%s = $transformer->transform($%s);', $transformer, $parameterName, $parameterName);
     }
 }
