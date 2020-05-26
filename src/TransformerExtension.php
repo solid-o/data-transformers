@@ -46,13 +46,13 @@ class TransformerExtension implements ExtensionInterface
                 continue;
             }
 
-            if ($reflectionMethod->getNumberOfParameters() !== 1) {
-                throw new LogicException(sprintf('Method %s requires %d parameters, but Transform annotation can be used only on single-argument method.', $reflectionMethod->getName(), $reflectionMethod->getNumberOfParameters()));
-            }
-
             $transform = $this->reader->getMethodAnnotation($reflectionMethod, Transform::class);
             if ($transform === null) {
                 continue;
+            }
+
+            if ($reflectionMethod->getNumberOfParameters() !== 1) {
+                throw new LogicException(sprintf('Method %s requires %d parameters, but Transform annotation can be used only on single-argument method.', $reflectionMethod->getName(), $reflectionMethod->getNumberOfParameters()));
             }
 
             assert($transform instanceof Transform);
