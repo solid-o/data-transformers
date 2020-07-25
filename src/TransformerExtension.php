@@ -34,10 +34,7 @@ class TransformerExtension implements ExtensionInterface
 
             assert($transform instanceof Transform);
 
-            if (! class_exists($transform->transformer)) {
-                throw new LogicException(sprintf('Transformer class "%s" does not exist.', $transform->transformer));
-            }
-
+            $this->assertExists($transform->transformer);
             $proxyBuilder->addPropertyInterceptor($property->getName(), new Interceptor($this->generateCode($transform->transformer, 'value')));
         }
 
@@ -56,11 +53,6 @@ class TransformerExtension implements ExtensionInterface
             }
 
             assert($transform instanceof Transform);
-
-            if (! class_exists($transform->transformer)) {
-                throw new LogicException(sprintf('Transformer class "%s" does not exist.', $transform->transformer));
-            }
-
             $proxyBuilder->addMethodInterceptor($reflectionMethod->getName(), new Interceptor($this->generateCode($transform->transformer, $reflectionMethod->getParameters()[0]->getName())));
         }
     }
@@ -68,5 +60,12 @@ class TransformerExtension implements ExtensionInterface
     protected function generateCode(string $transformer, string $parameterName): string
     {
         return sprintf('$transformer = new \%s(); $%s = $transformer->transform($%s);', $transformer, $parameterName, $parameterName);
+    }
+
+    protected function assertExists(string $transformer): void
+    {
+        if (! class_exists($transformer)) {
+            throw new LogicException(sprintf('Transformer class "%s" does not exist.', $transformer));
+        }
     }
 }
