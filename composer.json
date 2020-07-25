@@ -31,7 +31,8 @@
         "solido/dto-management": "dev-master",
         "solido/pagination": "dev-master",
         "solido/php-coding-standards": "dev-master",
-        "symfony/http-foundation": "^4.4|^5.0"
+        "symfony/http-foundation": "^4.4|^5.0",
+        "symfony/mime": "^4.4|^5.0"
     },
     "autoload": {
         "psr-4": {
