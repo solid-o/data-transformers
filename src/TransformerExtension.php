@@ -13,6 +13,7 @@ use Solido\DtoManagement\Proxy\Builder\ProxyBuilder;
 use Solido\DtoManagement\Proxy\Extension\ExtensionInterface;
 use function assert;
 use function class_exists;
+use function is_subclass_of;
 use function Safe\sprintf;
 
 class TransformerExtension implements ExtensionInterface
@@ -66,6 +67,10 @@ class TransformerExtension implements ExtensionInterface
     {
         if (! class_exists($transformer)) {
             throw new LogicException(sprintf('Transformer class "%s" does not exist.', $transformer));
+        }
+
+        if (! is_subclass_of($transformer, TransformerInterface::class)) {
+            throw new LogicException(sprintf('Transformer "%s" does not implement "%s".', $transformer, TransformerInterface::class));
         }
     }
 }
