@@ -55,7 +55,7 @@ class DateTimeTransformer implements TransformerInterface
         }
 
         if ($this->outputTimezone !== null && $this->outputTimezone !== $dateTime->getTimezone()->getName()) {
-            $dateTime->setTimezone(new DateTimeZone($this->outputTimezone));
+            $dateTime = $dateTime->setTimezone(new DateTimeZone($this->outputTimezone));
         }
 
         if (! checkdate((int) $matches[2], (int) $matches[3], (int) $matches[1])) {
