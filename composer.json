@@ -28,6 +28,7 @@
         "phpspec/prophecy-phpunit": "^2.0",
         "phpunit/phpunit": "^8.0|9.1",
         "roave/security-advisories": "dev-master",
+        "solido/common": "dev-master",
         "solido/dto-management": "dev-master",
         "solido/pagination": "dev-master",
         "solido/php-coding-standards": "dev-master",
