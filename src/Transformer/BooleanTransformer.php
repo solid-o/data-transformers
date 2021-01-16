@@ -6,6 +6,7 @@ namespace Solido\DataTransformers\Transformer;
 
 use Solido\DataTransformers\Exception\TransformationFailedException;
 use Solido\DataTransformers\TransformerInterface;
+
 use function gettype;
 use function in_array;
 use function is_bool;

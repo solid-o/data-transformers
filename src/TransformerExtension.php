@@ -11,6 +11,7 @@ use Solido\DataTransformers\Annotation\Transform;
 use Solido\DtoManagement\Proxy\Builder\Interceptor;
 use Solido\DtoManagement\Proxy\Builder\ProxyBuilder;
 use Solido\DtoManagement\Proxy\Extension\ExtensionInterface;
+
 use function assert;
 use function class_exists;
 use function is_subclass_of;

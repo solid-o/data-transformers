@@ -7,6 +7,7 @@ namespace Solido\DataTransformers\Transformer\Money;
 use Money\Currency;
 use Solido\DataTransformers\Exception\TransformationFailedException;
 use Solido\DataTransformers\TransformerInterface;
+
 use function is_string;
 
 /**

@@ -9,6 +9,7 @@ use Solido\DataTransformers\Exception\TransformationFailedException;
 use Solido\DataTransformers\HttpFoundation\SyntheticUploadedFile;
 use Solido\DataTransformers\TransformerInterface;
 use Symfony\Component\HttpFoundation\File\File;
+
 use function array_column;
 use function array_filter;
 use function array_map;
