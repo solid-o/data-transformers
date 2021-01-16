@@ -7,6 +7,7 @@ use LogicException;
 use PHPUnit\Framework\TestCase;
 use Prophecy\PhpUnit\ProphecyTrait;
 use Solido\DataTransformers\Tests\Fixtures\ProxableClass;
+use Solido\DataTransformers\Tests\Fixtures\ProxableClassWithAttributes;
 use Solido\DataTransformers\Tests\Fixtures\ProxableClassWithBadTransformer;
 use Solido\DataTransformers\Tests\Fixtures\ProxableClassWithNonExistentTransformer;
 use Solido\DataTransformers\TransformerExtension;
@@ -29,6 +30,26 @@ class TransformerExtensionTest extends TestCase
 
         $factory = new AccessInterceptorFactory($configuration);
         $className = $factory->generateProxy(ProxableClass::class);
+
+        $obj = new $className();
+        $obj->boolean = '1';
+        $obj->dateTime = '2020-05-18T00:00:00Z';
+
+        self::assertIsBool($obj->boolean);
+        self::assertTrue($obj->boolean);
+        self::assertInstanceOf(\DateTimeInterface::class, $obj->dateTime);
+    }
+
+    /**
+     * @requires PHP >= 8.0
+     */
+    public function testReadTransformAttributes(): void
+    {
+        $configuration = new Configuration();
+        $configuration->addExtension($this->extension);
+
+        $factory = new AccessInterceptorFactory($configuration);
+        $className = $factory->generateProxy(ProxableClassWithAttributes::class);
 
         $obj = new $className();
         $obj->boolean = '1';

@@ -7,6 +7,8 @@ namespace Solido\DataTransformers;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\Annotations\Reader;
 use LogicException;
+use ReflectionMethod;
+use ReflectionProperty;
 use Solido\DataTransformers\Annotation\Transform;
 use Solido\DtoManagement\Proxy\Builder\Interceptor;
 use Solido\DtoManagement\Proxy\Builder\ProxyBuilder;
@@ -16,6 +18,8 @@ use function assert;
 use function class_exists;
 use function is_subclass_of;
 use function Safe\sprintf;
+
+use const PHP_VERSION_ID;
 
 class TransformerExtension implements ExtensionInterface
 {
@@ -29,12 +33,10 @@ class TransformerExtension implements ExtensionInterface
     public function extend(ProxyBuilder $proxyBuilder): void
     {
         foreach ($proxyBuilder->properties->getAccessibleProperties() as $property) {
-            $transform = $this->reader->getPropertyAnnotation($property, Transform::class);
+            $transform = $this->getPropertyAttribute($property);
             if ($transform === null) {
                 continue;
             }
-
-            assert($transform instanceof Transform);
 
             $this->assertExists($transform->transformer);
             $proxyBuilder->addPropertyInterceptor($property->getName(), new Interceptor($this->generateCode($transform->transformer, 'value')));
@@ -45,7 +47,7 @@ class TransformerExtension implements ExtensionInterface
                 continue;
             }
 
-            $transform = $this->reader->getMethodAnnotation($reflectionMethod, Transform::class);
+            $transform = $this->getMethodAttribute($reflectionMethod);
             if ($transform === null) {
                 continue;
             }
@@ -54,7 +56,6 @@ class TransformerExtension implements ExtensionInterface
                 throw new LogicException(sprintf('Method %s requires %d parameters, but Transform annotation can be used only on single-argument method.', $reflectionMethod->getName(), $reflectionMethod->getNumberOfParameters()));
             }
 
-            assert($transform instanceof Transform);
             $proxyBuilder->addMethodInterceptor($reflectionMethod->getName(), new Interceptor($this->generateCode($transform->transformer, $reflectionMethod->getParameters()[0]->getName())));
         }
     }
@@ -73,5 +74,33 @@ class TransformerExtension implements ExtensionInterface
         if (! is_subclass_of($transformer, TransformerInterface::class)) {
             throw new LogicException(sprintf('Transformer "%s" does not implement "%s".', $transformer, TransformerInterface::class));
         }
+    }
+
+    private function getPropertyAttribute(ReflectionProperty $property): ?Transform
+    {
+        if (PHP_VERSION_ID >= 80000) {
+            foreach ($property->getAttributes(Transform::class) as $attribute) {
+                $transform = $attribute->newInstance();
+                assert($transform instanceof Transform);
+
+                return $transform;
+            }
+        }
+
+        return $this->reader->getPropertyAnnotation($property, Transform::class);
+    }
+
+    private function getMethodAttribute(ReflectionMethod $method): ?Transform
+    {
+        if (PHP_VERSION_ID >= 80000) {
+            foreach ($method->getAttributes(Transform::class) as $attribute) {
+                $transform = $attribute->newInstance();
+                assert($transform instanceof Transform);
+
+                return $transform;
+            }
+        }
+
+        return $this->reader->getMethodAnnotation($method, Transform::class);
     }
 }
