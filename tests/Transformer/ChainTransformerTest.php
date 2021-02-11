@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Solido\DataTransformers\Tests\Transformer;
 
@@ -12,20 +14,13 @@ class ChainTransformerTest extends TestCase
 {
     use ProphecyTrait;
 
-    /**
-     * @var TransformerInterface|ObjectProphecy
-     */
+    /** @var TransformerInterface|ObjectProphecy */
     private ObjectProphecy $innerTransformer1;
 
-    /**
-     * @var TransformerInterface|ObjectProphecy
-     */
+    /** @var TransformerInterface|ObjectProphecy */
     private ObjectProphecy $innerTransformer2;
     private ChainTransformer $transformer;
 
-    /**
-     * {@inheritdoc}
-     */
     protected function setUp(): void
     {
         $this->innerTransformer1 = $this->prophesize(TransformerInterface::class);
@@ -41,13 +36,11 @@ class ChainTransformerTest extends TestCase
 
         $this->innerTransformer1->transform($value)
             ->shouldBeCalled()
-            ->willReturn($transformedValue1)
-        ;
+            ->willReturn($transformedValue1);
 
         $this->innerTransformer2->transform($transformedValue1)
             ->shouldBeCalled()
-            ->willReturn($transformedValue2)
-        ;
+            ->willReturn($transformedValue2);
 
         self::assertEquals($transformedValue2, $this->transformer->transform($value));
     }

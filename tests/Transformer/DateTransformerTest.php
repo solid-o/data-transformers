@@ -1,18 +1,24 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Solido\DataTransformers\Tests\Transformer;
 
+use DateTimeImmutable;
+use DateTimeInterface;
+use Generator;
 use PHPUnit\Framework\TestCase;
 use Solido\DataTransformers\Exception\TransformationFailedException;
 use Solido\DataTransformers\Transformer\DateTransformer;
+use stdClass;
+
+use function is_string;
+use function iterator_to_array;
 
 class DateTransformerTest extends TestCase
 {
     private DateTransformer $transformer;
 
-    /**
-     * {@inheritdoc}
-     */
     public function setUp(): void
     {
         $this->transformer = new DateTransformer();
@@ -24,12 +30,12 @@ class DateTransformerTest extends TestCase
         yield [''];
     }
 
-    public function provideNonDateTimeInterfaceValues(): \Generator
+    public function provideNonDateTimeInterfaceValues(): Generator
     {
         yield ['i am not a phone number'];
         yield [1];
         yield [1.0];
-        yield [new \stdClass()];
+        yield [new stdClass()];
         yield [[]];
     }
 
@@ -43,8 +49,8 @@ class DateTransformerTest extends TestCase
 
     public function provideInvalidTransformValues(): iterable
     {
-        foreach (\iterator_to_array($this->provideNonDateTimeInterfaceValues()) as $value) {
-            yield [$value, \is_string($value) ? 'Unexpected date format' : 'Expected a string'];
+        foreach (iterator_to_array($this->provideNonDateTimeInterfaceValues()) as $value) {
+            yield [$value, is_string($value) ? 'Unexpected date format' : 'Expected a string'];
         }
     }
 
@@ -60,14 +66,15 @@ class DateTransformerTest extends TestCase
 
     public function testTransformShouldReturnValueOnDateTimeInterfaceValue(): void
     {
-        $now = new \DateTimeImmutable();
+        $now = new DateTimeImmutable();
 
         self::assertEquals($now, $this->transformer->transform($now));
     }
 
-    public function provideDateAsStringValues(): \Generator
+    public function provideDateAsStringValues(): Generator
     {
-        $now = new \DateTimeImmutable('midnight');
+        $now = new DateTimeImmutable('midnight');
+
         yield [$now, $now->format('Y-m-d')];
         yield [$now, $now->format('d/m/Y')];
     }
@@ -75,7 +82,7 @@ class DateTransformerTest extends TestCase
     /**
      * @dataProvider provideDateAsStringValues
      */
-    public function testTransformShouldAcceptDateAsString(\DateTimeInterface $expected, string $dateAsString): void
+    public function testTransformShouldAcceptDateAsString(DateTimeInterface $expected, string $dateAsString): void
     {
         self::assertEquals($expected, $this->transformer->transform($dateAsString));
     }

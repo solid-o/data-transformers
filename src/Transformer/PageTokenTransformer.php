@@ -9,6 +9,10 @@ use Solido\DataTransformers\TransformerInterface;
 use Solido\Pagination\Exception\InvalidTokenException;
 use Solido\Pagination\PageToken;
 
+use function gettype;
+use function is_string;
+use function Safe\sprintf;
+
 class PageTokenTransformer implements TransformerInterface
 {
     /**
@@ -22,6 +26,10 @@ class PageTokenTransformer implements TransformerInterface
 
         if ($value instanceof PageToken) {
             return $value;
+        }
+
+        if (! is_string($value)) {
+            throw new TransformationFailedException(sprintf('Expected a string value, %s passed', gettype($value)));
         }
 
         try {

@@ -1,18 +1,18 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Solido\DataTransformers\Tests\Transformer;
 
 use PHPUnit\Framework\TestCase;
 use Solido\DataTransformers\Exception\TransformationFailedException;
 use Solido\DataTransformers\Transformer\IntegerTransformer;
+use stdClass;
 
 class IntegerTransformerTest extends TestCase
 {
     private IntegerTransformer $transformer;
 
-    /**
-     * {@inheritdoc}
-     */
     protected function setUp(): void
     {
         $this->transformer = new IntegerTransformer();
@@ -42,7 +42,7 @@ class IntegerTransformerTest extends TestCase
     public function provideNonNumericValues(): iterable
     {
         yield ['i am not a phone number'];
-        yield [new \stdClass()];
+        yield [new stdClass()];
         yield [[]];
     }
 

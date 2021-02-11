@@ -1,33 +1,30 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Solido\DataTransformers\Tests\Transformer;
 
 use PHPUnit\Framework\TestCase;
-use Prophecy\Argument;
 use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
 use Solido\Common\Exception\ResourceNotFoundException;
 use Solido\Common\Urn\Urn;
 use Solido\Common\Urn\UrnConverterInterface;
 use Solido\DataTransformers\Exception\TransformationFailedException;
-use Solido\DataTransformers\Transformer\ChainTransformer;
 use Solido\DataTransformers\Transformer\UrnToItemTransformer;
-use Solido\DataTransformers\TransformerInterface;
+use stdClass;
+
+use function fopen;
 
 class UrnToItemTransformerTest extends TestCase
 {
     use ProphecyTrait;
 
-    /**
-     * @var UrnConverterInterface|ObjectProphecy
-     */
+    /** @var UrnConverterInterface|ObjectProphecy */
     private ObjectProphecy $urnConverter;
 
     private UrnToItemTransformer $transformer;
 
-    /**
-     * {@inheritdoc}
-     */
     protected function setUp(): void
     {
         $this->urnConverter = $this->prophesize(UrnConverterInterface::class);
@@ -42,17 +39,17 @@ class UrnToItemTransformerTest extends TestCase
 
     public function testShouldNotTransformIfObjectIsPassed(): void
     {
-        $obj = new \stdClass();
+        $obj = new stdClass();
 
         self::assertSame($obj, $this->transformer->transform($obj));
     }
 
     public function provideNotUrn(): iterable
     {
-        yield [ true ];
-        yield [ 42 ];
-        yield [ [] ];
-        yield [ \fopen('php://temp', 'rb') ];
+        yield [true];
+        yield [42];
+        yield [[]];
+        yield [fopen('php://temp', 'rb')];
     }
 
     /**
@@ -67,7 +64,7 @@ class UrnToItemTransformerTest extends TestCase
 
     public function testShouldTransformToObject(): void
     {
-        $obj = new \stdClass();
+        $obj = new stdClass();
         $this->urnConverter->getItemFromUrn(new Urn('test'), null)->willReturn($obj);
 
         self::assertSame($obj, $this->transformer->transform('test'));

@@ -1,11 +1,12 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Solido\DataTransformers\Tests;
 
-use Doctrine\Common\Annotations\Reader;
+use DateTimeInterface;
 use LogicException;
 use PHPUnit\Framework\TestCase;
-use Prophecy\PhpUnit\ProphecyTrait;
 use Solido\DataTransformers\Tests\Fixtures\ProxableClass;
 use Solido\DataTransformers\Tests\Fixtures\ProxableClassWithAttributes;
 use Solido\DataTransformers\Tests\Fixtures\ProxableClassWithBadTransformer;
@@ -34,10 +35,15 @@ class TransformerExtensionTest extends TestCase
         $obj = new $className();
         $obj->boolean = '1';
         $obj->dateTime = '2020-05-18T00:00:00Z';
+        $obj->setNewBool('on');
 
         self::assertIsBool($obj->boolean);
         self::assertTrue($obj->boolean);
-        self::assertInstanceOf(\DateTimeInterface::class, $obj->dateTime);
+
+        self::assertIsBool($obj->newBool);
+        self::assertTrue($obj->newBool);
+
+        self::assertInstanceOf(DateTimeInterface::class, $obj->dateTime);
     }
 
     /**
@@ -57,7 +63,7 @@ class TransformerExtensionTest extends TestCase
 
         self::assertIsBool($obj->boolean);
         self::assertTrue($obj->boolean);
-        self::assertInstanceOf(\DateTimeInterface::class, $obj->dateTime);
+        self::assertInstanceOf(DateTimeInterface::class, $obj->dateTime);
     }
 
     public function testShouldCheckTransformerExistence(): void

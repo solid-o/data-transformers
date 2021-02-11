@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Solido\DataTransformers\Tests\Transformer\Money;
 
@@ -6,14 +8,12 @@ use Money\Currency;
 use PHPUnit\Framework\TestCase;
 use Solido\DataTransformers\Exception\TransformationFailedException;
 use Solido\DataTransformers\Transformer\Money\CurrencyTransformer;
+use stdClass;
 
 class CurrencyTransformerTest extends TestCase
 {
     private CurrencyTransformer $transformer;
 
-    /**
-     * {@inheritdoc}
-     */
     protected function setUp(): void
     {
         $this->transformer = new CurrencyTransformer();
@@ -31,7 +31,7 @@ class CurrencyTransformerTest extends TestCase
         yield [47];
         yield [47];
         yield [['foobar']];
-        yield [new \stdClass()];
+        yield [new stdClass()];
     }
 
     /**

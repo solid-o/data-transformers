@@ -1,18 +1,18 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Solido\DataTransformers\Tests\Transformer;
 
 use PHPUnit\Framework\TestCase;
 use Solido\DataTransformers\Exception\TransformationFailedException;
 use Solido\DataTransformers\Transformer\BooleanTransformer;
+use stdClass;
 
 class BooleanTransformerTest extends TestCase
 {
     private BooleanTransformer $transformer;
 
-    /**
-     * {@inheritdoc}
-     */
     protected function setUp(): void
     {
         $this->transformer = new BooleanTransformer();
@@ -41,7 +41,7 @@ class BooleanTransformerTest extends TestCase
     {
         $this->expectException(TransformationFailedException::class);
         $this->expectExceptionMessage('Expected a scalar value, object passed');
-        $this->transformer->transform(new \stdClass());
+        $this->transformer->transform(new stdClass());
     }
 
     public function testTransformShouldThrowOnArrays(): void

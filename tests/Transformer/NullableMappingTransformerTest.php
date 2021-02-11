@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Solido\DataTransformers\Tests\Transformer;
 
@@ -8,20 +10,16 @@ use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
 use Solido\DataTransformers\Transformer\NullableMappingTransformer;
 use Solido\DataTransformers\TransformerInterface;
+use stdClass;
 
 class NullableMappingTransformerTest extends TestCase
 {
     use ProphecyTrait;
 
-    /**
-     * @var TransformerInterface|ObjectProphecy
-     */
+    /** @var TransformerInterface|ObjectProphecy */
     private ObjectProphecy $innerTransformer;
     private NullableMappingTransformer $transformer;
 
-    /**
-     * {@inheritdoc}
-     */
     protected function setUp(): void
     {
         $this->innerTransformer = $this->prophesize(TransformerInterface::class);
@@ -37,7 +35,7 @@ class NullableMappingTransformerTest extends TestCase
 
     public function provideElements(): iterable
     {
-        yield [['we', 'are', 'the', 'elements', 123, [], new \stdClass()]];
+        yield [['we', 'are', 'the', 'elements', 123, [], new stdClass()]];
     }
 
     /**

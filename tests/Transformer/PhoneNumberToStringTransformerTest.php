@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Solido\DataTransformers\Tests\Transformer;
 
@@ -8,14 +10,12 @@ use libphonenumber\PhoneNumberUtil;
 use PHPUnit\Framework\TestCase;
 use Solido\DataTransformers\Exception\TransformationFailedException;
 use Solido\DataTransformers\Transformer\PhoneNumberTransformer;
+use stdClass;
 
 class PhoneNumberToStringTransformerTest extends TestCase
 {
     private PhoneNumberTransformer $transformer;
 
-    /**
-     * {@inheritdoc}
-     */
     protected function setUp(): void
     {
         $this->transformer = new PhoneNumberTransformer();
@@ -29,7 +29,7 @@ class PhoneNumberToStringTransformerTest extends TestCase
     public function nonPhoneNumberArguments(): iterable
     {
         yield ['i am not a phone number'];
-        yield [new \stdClass()];
+        yield [new stdClass()];
         yield [[]];
         yield [123];
         yield [11.123];
@@ -44,7 +44,7 @@ class PhoneNumberToStringTransformerTest extends TestCase
     public function nonPhoneNumberStringRepresentation(): iterable
     {
         yield ['i am not a phone number'];
-        yield [new \stdClass()];
+        yield [new stdClass()];
         yield [[]];
         yield [123];
         yield [11.123];

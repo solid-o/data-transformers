@@ -1,10 +1,13 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Solido\DataTransformers\Tests\Transformer;
 
 use PHPUnit\Framework\TestCase;
 use Solido\DataTransformers\Exception\TransformationFailedException;
 use Solido\DataTransformers\Transformer\Base64UriFileTransformer;
+use stdClass;
 use Symfony\Component\HttpFoundation\File\File;
 
 class Base64UriFileTransformerTest extends TestCase
@@ -15,9 +18,6 @@ class Base64UriFileTransformerTest extends TestCase
 
     private Base64UriFileTransformer $transformer;
 
-    /**
-     * {@inheritdoc}
-     */
     protected function setUp(): void
     {
         $this->transformer = new Base64UriFileTransformer();
@@ -40,7 +40,7 @@ class Base64UriFileTransformerTest extends TestCase
         yield [0.23];
         yield [47];
         yield [['foobar']];
-        yield [new \stdClass()];
+        yield [new stdClass()];
     }
 
     /**
@@ -75,7 +75,7 @@ class Base64UriFileTransformerTest extends TestCase
         self::assertInstanceOf(File::class, $file);
 
         $handle = $file->openFile();
-        self::assertStringEqualsFile(__DIR__.'/../Fixtures/test.gif', $handle->fread($handle->getSize()));
+        self::assertStringEqualsFile(__DIR__ . '/../Fixtures/test.gif', $handle->fread($handle->getSize()));
         self::assertEquals('image/gif', $file->getMimeType());
     }
 }
