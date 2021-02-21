@@ -41,7 +41,7 @@ class IntegerTransformerTest extends TestCase
 
     public function provideNonNumericValues(): iterable
     {
-        yield ['i am not a phone number'];
+        yield ['i am not a number'];
         yield [new stdClass()];
         yield [[]];
     }
@@ -56,8 +56,20 @@ class IntegerTransformerTest extends TestCase
         $this->transformer->transform($value);
     }
 
-    public function testTransformerShouldTransformNumericStrings(): void
+    /**
+     * @dataProvider provideNumericValues
+     */
+    public function testTransformerShouldTransformNumericStrings($expected, $value): void
     {
-        self::assertEquals(12345, $this->transformer->transform('12345'));
+        self::assertEquals($expected, $this->transformer->transform($value));
+    }
+
+    public function provideNumericValues(): iterable
+    {
+        yield [12345, '12345'];
+        yield [1, '1.0'];
+        yield [4, '4.8'];
+        yield [0, '0'];
+        yield [42, 42.0];
     }
 }

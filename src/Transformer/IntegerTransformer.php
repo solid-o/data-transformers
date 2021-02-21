@@ -7,6 +7,7 @@ namespace Solido\DataTransformers\Transformer;
 use Solido\DataTransformers\Exception\TransformationFailedException;
 use Solido\DataTransformers\TransformerInterface;
 
+use function is_float;
 use function is_int;
 use function is_numeric;
 use function is_string;
@@ -26,7 +27,7 @@ class IntegerTransformer implements TransformerInterface
             return $value;
         }
 
-        if (! is_string($value) || ! is_numeric($value)) {
+        if (! is_float($value) && (! is_string($value) || ! is_numeric($value))) {
             throw new TransformationFailedException('Cannot transform a non-numeric string value to an integer');
         }
 
