@@ -31,26 +31,38 @@ class DateTimeTransformer implements TransformerInterface
     /**
      * {@inheritdoc}
      */
-    public function transform($iso8601): ?DateTimeInterface
+    public function transform($value): ?DateTimeInterface
     {
-        if ($iso8601 === null || $iso8601 instanceof DateTimeInterface) {
-            return $iso8601;
-        }
-
-        if (! is_string($iso8601)) {
-            throw new TransformationFailedException('Expected a string.');
-        }
-
-        if ($iso8601 === '') {
+        if ($value === null) {
             return null;
         }
 
-        if (! preg_match('/^(\d{4})-(\d{2})-(\d{2})T\d{2}:\d{2}(?::\d{2})?(?:\.\d+)?(?:Z|(?:(?:\+|-)\d{2}:?\d{2}))$/', $iso8601, $matches)) {
-            throw new TransformationFailedException(sprintf('The date "%s" is not a valid date.', $iso8601));
+        if ($value instanceof DateTimeInterface) {
+            if ($value instanceof \DateTime && $this->asImmutable) {
+                return \DateTimeImmutable::createFromMutable($value);
+            }
+
+            if ($value instanceof \DateTimeImmutable && ! $this->asImmutable) {
+                return \DateTime::createFromImmutable($value);
+            }
+
+            return $value;
+        }
+
+        if (! is_string($value)) {
+            throw new TransformationFailedException('Expected a string.');
+        }
+
+        if ($value === '') {
+            return null;
+        }
+
+        if (! preg_match('/^(\d{4})-(\d{2})-(\d{2})T\d{2}:\d{2}(?::\d{2})?(?:\.\d+)?(?:Z|(?:(?:\+|-)\d{2}:?\d{2}))$/', $value, $matches)) {
+            throw new TransformationFailedException(sprintf('The date "%s" is not a valid date.', $value));
         }
 
         try {
-            $dateTime = $this->asImmutable ? new DateTimeImmutable($iso8601) : new DateTime($iso8601);
+            $dateTime = $this->asImmutable ? new DateTimeImmutable($value) : new DateTime($value);
         } catch (Throwable $e) {
             throw new TransformationFailedException($e->getMessage(), $e->getCode(), $e);
         }

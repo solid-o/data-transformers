@@ -59,6 +59,17 @@ class DateTimeTransformerTest extends TestCase
         }
     }
 
+    public function testTransformMutability(): void
+    {
+        $transformer = new DateTimeTransformer('Etc/UTC', true);
+        self::assertInstanceOf(\DateTimeImmutable::class, $transformer->transform(new \DateTime()));
+        self::assertInstanceOf(\DateTimeImmutable::class, $transformer->transform(new \DateTimeImmutable()));
+
+        $transformer = new DateTimeTransformer('Etc/UTC', false);
+        self::assertInstanceOf(\DateTime::class, $transformer->transform(new \DateTime()));
+        self::assertInstanceOf(\DateTime::class, $transformer->transform(new \DateTimeImmutable()));
+    }
+
     public function testTransformRequiresString(): void
     {
         $this->expectException(TransformationFailedException::class);
