@@ -7,16 +7,17 @@ namespace Solido\DataTransformers\Tests\Transformer;
 use PHPUnit\Framework\TestCase;
 use Solido\DataTransformers\Exception\TransformationFailedException;
 use Solido\DataTransformers\Transformer\Base64UriFileTransformer;
+use Solido\DataTransformers\TransformerInterface;
 use stdClass;
 use Symfony\Component\HttpFoundation\File\File;
 
 class Base64UriFileTransformerTest extends TestCase
 {
-    private const TEST_GIF_DATA = 'data:image/gif;base64,R0lGODdhAQABAIAAAP///////ywAAAAAAQABAAACAkQBADs=';
-    private const TEST_TXT_DATA = 'data:text/plain,K%C3%A9vin%20Dunglas%0A';
-    private const TEST_TXT_CONTENT = "Kévin Dunglas\n";
+    protected const TEST_GIF_DATA = 'data:image/gif;base64,R0lGODdhAQABAIAAAP///////ywAAAAAAQABAAACAkQBADs=';
+    protected const TEST_TXT_DATA = 'data:text/plain,K%C3%A9vin%20Dunglas%0A';
+    protected const TEST_TXT_CONTENT = "Kévin Dunglas\n";
 
-    private Base64UriFileTransformer $transformer;
+    protected TransformerInterface $transformer;
 
     protected function setUp(): void
     {

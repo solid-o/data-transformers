@@ -29,13 +29,13 @@ class Base64UriFileTransformer implements TransformerInterface
     /**
      * {@inheritdoc}
      */
-    public function transform($value): ?File
+    public function transform($value): ?object
     {
         if ($value === null) {
             return null;
         }
 
-        if ($value instanceof File) {
+        if (! $this->shouldTransform($value)) {
             return $value;
         }
 
@@ -70,6 +70,21 @@ class Base64UriFileTransformer implements TransformerInterface
             $data = urldecode($data);
         }
 
-        return new SyntheticUploadedFile($data, $attributes['filename'] ?? null, $mime);
+        return $this->createFile($data, $attributes['filename'] ?? null, $mime);
+    }
+
+    /**
+     * Whether the passed values should be transformed.
+     *
+     * @param mixed $value
+     */
+    protected function shouldTransform($value): bool
+    {
+        return ! $value instanceof File;
+    }
+
+    protected function createFile(string $data, ?string $originalName, ?string $mime): object
+    {
+        return new SyntheticUploadedFile($data, $originalName, $mime);
     }
 }
