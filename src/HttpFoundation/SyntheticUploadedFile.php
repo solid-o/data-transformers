@@ -61,7 +61,7 @@ class SyntheticUploadedFile extends UploadedFile
             try {
                 rename($this->getPathname(), $target->getPathname());
             } catch (FilesystemException $e) {
-                throw new FileException(sprintf('Could not move the file "%s" to "%s" (%s)', $this->getPathname(), $target->getPathname(), strip_tags($error['message'] ?? '')), 0, $e);
+                throw new FileException(sprintf('Could not move the file "%s" to "%s" (%s)', $this->getPathname(), $target->getPathname(), strip_tags($e->getMessage())), 0, $e);
             }
 
             try {
