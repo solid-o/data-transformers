@@ -31,9 +31,9 @@
         "psr/http-factory": "^1.0",
         "psr/http-message": "^1.0",
         "roave/security-advisories": "dev-master",
-        "solido/common": "dev-master",
-        "solido/dto-management": "dev-master",
-        "solido/pagination": "dev-master",
+        "solido/common": "^0.2",
+        "solido/dto-management": "^0.2",
+        "solido/pagination": "^0.2",
         "solido/php-coding-standards": "dev-master",
         "symfony/http-foundation": "^4.4 || ^5.0",
         "symfony/mime": "^4.4 || ^5.0"
