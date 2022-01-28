@@ -1,0 +1,20 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Solido\DataTransformers\Tests\Fixtures;
+
+use Solido\DataTransformers\Annotation\Transform;
+use Solido\DataTransformers\Transformer\BooleanTransformer;
+
+class ProxableClassWithMultipleParams
+{
+    public bool $newBool;
+
+    /**
+     * @Transform(BooleanTransformer::class)
+     */
+    public function setNewBool(bool $newBool, string $newValue): void
+    {
+    }
+}

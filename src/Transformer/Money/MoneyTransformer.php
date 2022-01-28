@@ -35,13 +35,15 @@ class MoneyTransformer implements TransformerInterface
                 throw new TransformationFailedException('Amount must be numeric');
             }
 
-            return new Money((string) $value['amount'], new Currency($value['currency']));
+            /* @phpstan-ignore-next-line */
+            return new Money($value['amount'], new Currency($value['currency']));
         }
 
         if (! is_numeric($value)) {
             throw new TransformationFailedException('Value must be numeric or an array with amount and currency keys set');
         }
 
-        return Money::EUR((string) $value);
+        /* @phpstan-ignore-next-line */
+        return Money::EUR($value);
     }
 }

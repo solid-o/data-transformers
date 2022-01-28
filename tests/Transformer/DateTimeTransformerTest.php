@@ -5,28 +5,13 @@ declare(strict_types=1);
 namespace Solido\DataTransformers\Tests\Transformer;
 
 use DateTime;
-use DateTimeInterface;
+use DateTimeImmutable;
 use PHPUnit\Framework\TestCase;
 use Solido\DataTransformers\Exception\TransformationFailedException;
 use Solido\DataTransformers\Transformer\DateTimeTransformer;
 
 class DateTimeTransformerTest extends TestCase
 {
-    private ?DateTimeInterface $dateTime;
-    private ?DateTimeInterface $dateTimeWithoutSeconds;
-
-    protected function setUp(): void
-    {
-        $this->dateTime = new DateTime('2010-02-03 04:05:06 UTC');
-        $this->dateTimeWithoutSeconds = new DateTime('2010-02-03 04:05:00 UTC');
-    }
-
-    protected function tearDown(): void
-    {
-        $this->dateTime = null;
-        $this->dateTimeWithoutSeconds = null;
-    }
-
     public function transformProvider(): iterable
     {
         return [
@@ -50,10 +35,22 @@ class DateTimeTransformerTest extends TestCase
      */
     public function testTransform(string $toTz, ?string $to, string $from): void
     {
-        $transformer = new DateTimeTransformer($toTz);
-
+        $transformer = new DateTimeTransformer($toTz, false);
         if ($to !== null) {
-            self::assertEquals(new DateTime($to), $transformer->transform($from));
+            $datetime = $transformer->transform($from);
+            self::assertInstanceOf(DateTime::class, $datetime);
+            self::assertEquals(new DateTime($to), $datetime);
+            self::assertEquals($datetime->getTimezone()->getName(), $toTz);
+        } else {
+            self::assertNull($transformer->transform($from));
+        }
+
+        $transformer = new DateTimeTransformer($toTz);
+        if ($to !== null) {
+            $datetime = $transformer->transform($from);
+            self::assertInstanceOf(DateTimeImmutable::class, $datetime);
+            self::assertEquals(new DateTimeImmutable($to), $datetime);
+            self::assertEquals($datetime->getTimezone()->getName(), $toTz);
         } else {
             self::assertNull($transformer->transform($from));
         }
@@ -62,12 +59,12 @@ class DateTimeTransformerTest extends TestCase
     public function testTransformMutability(): void
     {
         $transformer = new DateTimeTransformer('Etc/UTC', true);
-        self::assertInstanceOf(\DateTimeImmutable::class, $transformer->transform(new \DateTime()));
-        self::assertInstanceOf(\DateTimeImmutable::class, $transformer->transform(new \DateTimeImmutable()));
+        self::assertInstanceOf(DateTimeImmutable::class, $transformer->transform(new DateTime()));
+        self::assertInstanceOf(DateTimeImmutable::class, $transformer->transform(new DateTimeImmutable()));
 
         $transformer = new DateTimeTransformer('Etc/UTC', false);
-        self::assertInstanceOf(\DateTime::class, $transformer->transform(new \DateTime()));
-        self::assertInstanceOf(\DateTime::class, $transformer->transform(new \DateTimeImmutable()));
+        self::assertInstanceOf(DateTime::class, $transformer->transform(new DateTime()));
+        self::assertInstanceOf(DateTime::class, $transformer->transform(new DateTimeImmutable()));
     }
 
     public function testTransformRequiresString(): void
@@ -91,9 +88,19 @@ class DateTimeTransformerTest extends TestCase
     public function testTransformExpectsValidDateString(string $date): void
     {
         $this->expectException(TransformationFailedException::class);
-        $transformer = new DateTimeTransformer('UTC');
+        $this->expectExceptionMessage('is not a valid date.');
 
+        $transformer = new DateTimeTransformer('UTC');
         $transformer->transform($date);
+    }
+
+    public function testTransformShouldThrowOnInvalidDateTimeString(): void
+    {
+        $this->expectException(TransformationFailedException::class);
+        $this->expectExceptionMessage('DateTimeImmutable::__construct(): Failed to parse time string (2010-02-30T04:05:06+36:00)');
+
+        $transformer = new DateTimeTransformer('UTC');
+        $transformer->transform('2010-02-30T04:05:06+36:00');
     }
 
     public function invalidDateStringProvider(): iterable
@@ -105,6 +112,9 @@ class DateTimeTransformerTest extends TestCase
             'cookie format' => ['Saturday, 01-May-2010 04:05:00 Z'],
             'RFC 822 format' => ['Sat, 01 May 10 04:05:00 +0000'],
             'RSS format' => ['Sat, 01 May 2010 04:05:00 +0000'],
+            'with extra chars at end' => ['2010-02-03T04:05:06Z foobar'],
+            'with extra chars at beginning' => ['foobar 2010-02-03T04:05:06Z'],
+            'invalid date' => ['2010-02-30T04:05:06Z'],
         ];
     }
 }

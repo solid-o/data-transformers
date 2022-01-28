@@ -35,6 +35,9 @@ class SyntheticUploadedFile extends UploadedFile
         parent::__construct($tempPath, $originalName ?? 'up_' . mt_rand(), $mimeType, $error, false);
     }
 
+    /**
+     * @infection-ignore-all
+     */
     public function __destruct()
     {
         if (! file_exists($this->getPathname())) {
@@ -53,6 +56,9 @@ class SyntheticUploadedFile extends UploadedFile
         return true;
     }
 
+    /**
+     * @infection-ignore-all
+     */
     public function move(string $directory, ?string $name = null): File
     {
         if ($this->isValid()) {

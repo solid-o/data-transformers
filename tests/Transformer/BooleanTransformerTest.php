@@ -55,13 +55,17 @@ class BooleanTransformerTest extends TestCase
     {
         foreach (BooleanTransformer::FALSE_VALUES as $falseValue) {
             yield [$falseValue];
+            yield [strtoupper($falseValue)];
         }
+
+        yield [0];
+        yield [false];
     }
 
     /**
      * @dataProvider provideFalseValues
      */
-    public function testTransformShouldReturnFalseOnFalseValues(string $value): void
+    public function testTransformShouldReturnFalseOnFalseValues($value): void
     {
         self::assertFalse($this->transformer->transform($value));
     }
@@ -70,13 +74,17 @@ class BooleanTransformerTest extends TestCase
     {
         foreach (BooleanTransformer::TRUE_VALUES as $trueValue) {
             yield [$trueValue];
+            yield [strtoupper($trueValue)];
         }
+
+        yield [1];
+        yield [1.0];
     }
 
     /**
      * @dataProvider provideTrueValues
      */
-    public function testTransformShouldReturnTrueOnTrueValues(string $value): void
+    public function testTransformShouldReturnTrueOnTrueValues($value): void
     {
         self::assertTrue($this->transformer->transform($value));
     }

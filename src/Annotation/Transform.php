@@ -28,14 +28,12 @@ class Transform
      */
     public function __construct($transformer)
     {
-        if (is_string($transformer)) {
-            $data = ['transformer' => $transformer];
-        } elseif (is_array($transformer)) {
-            $data = $transformer;
-        } else {
-            throw new TypeError(sprintf('Argument #1 passed to %s must be a string. %s passed', __METHOD__, get_debug_type($transformer)));
+        $data = ! is_array($transformer) ? ['transformer' => $transformer] : $transformer;
+        $value = $data['transformer'] ?? $data['value'] ?? null;
+        if (! is_string($value)) {
+            throw new TypeError(sprintf('Transformer argument must be a string. %s passed', get_debug_type($transformer)));
         }
 
-        $this->transformer = $data['transformer'] ?? $data['value'] ?? null;
+        $this->transformer = $value;
     }
 }

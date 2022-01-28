@@ -19,6 +19,14 @@ class ProxableClass
     /** @Transform(DateTimeTransformer::class) */
     public DateTimeInterface $dateTime;
 
+    public function method1(): void
+    {
+    }
+
+    public function method2(): void
+    {
+    }
+
     /**
      * @Transform(BooleanTransformer::class)
      */

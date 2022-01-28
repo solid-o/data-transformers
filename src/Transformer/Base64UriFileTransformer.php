@@ -11,9 +11,9 @@ use Solido\DataTransformers\TransformerInterface;
 use Symfony\Component\HttpFoundation\File\File;
 
 use function array_column;
-use function array_filter;
 use function array_map;
 use function explode;
+use function is_object;
 use function is_string;
 use function Safe\base64_decode;
 use function Safe\preg_match;
@@ -35,7 +35,7 @@ class Base64UriFileTransformer implements TransformerInterface
             return null;
         }
 
-        if (! $this->shouldTransform($value)) {
+        if (is_object($value) && ! $this->shouldTransform($value)) {
             return $value;
         }
 
@@ -50,10 +50,10 @@ class Base64UriFileTransformer implements TransformerInterface
         [, $mime, $attributes, $base64, $data] = $matches;
 
         if (! empty($attributes)) {
-            $attributes = array_filter(array_map(
+            $attributes = array_map(
                 static fn ($value) => array_map('urldecode', explode('=', $value)),
                 explode(';', $attributes)
-            ));
+            );
 
             $attributes = array_column($attributes, 1, 0);
         } else {

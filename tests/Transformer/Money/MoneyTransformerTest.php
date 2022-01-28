@@ -60,6 +60,9 @@ class MoneyTransformerTest extends TestCase
     public function provideValidTransformValues(): iterable
     {
         yield [['amount' => '50000', 'currency' => 'EUR']];
+        yield [['amount' => 50000, 'currency' => 'EUR']];
+        yield ['50000'];
+        yield [50000];
         yield [Money::EUR('50000')];
     }
 

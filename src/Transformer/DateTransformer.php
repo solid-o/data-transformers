@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Solido\DataTransformers\Transformer;
 
+use DateTimeImmutable;
 use DateTimeInterface;
-use Safe\DateTimeImmutable;
 use Solido\DataTransformers\Exception\TransformationFailedException;
 use Solido\DataTransformers\TransformerInterface;
 
@@ -31,8 +31,9 @@ class DateTransformer implements TransformerInterface
             throw new TransformationFailedException('Expected a string');
         }
 
+        /* @phpstan-ignore-next-line */
         $dateTime = new DateTimeImmutable('midnight');
-        if (preg_match('/(\d{2})\/(\d{2})\/(\d{4,})/', $value, $matches)) {
+        if (preg_match('#(\d{2})/(\d{2})/(\d{4,})#', $value, $matches)) {
             return $dateTime->setDate((int) $matches[3], (int) $matches[2], (int) $matches[1]);
         }
 

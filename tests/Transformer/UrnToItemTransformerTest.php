@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Solido\DataTransformers\Tests\Transformer;
 
 use PHPUnit\Framework\TestCase;
+use Prophecy\Argument;
 use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
 use Solido\Common\Exception\ResourceNotFoundException;
@@ -58,6 +59,7 @@ class UrnToItemTransformerTest extends TestCase
     public function testShouldThrowIfNotUrnIsPassed($value): void
     {
         $this->expectException(TransformationFailedException::class);
+        $this->expectExceptionMessage('Expected a string. Got ' . get_debug_type($value));
 
         $this->transformer->transform($value);
     }
@@ -65,18 +67,28 @@ class UrnToItemTransformerTest extends TestCase
     public function testShouldTransformToObject(): void
     {
         $obj = new stdClass();
-        $this->urnConverter->getItemFromUrn(new Urn('test'), null)->willReturn($obj);
+        $this->urnConverter->getItemFromUrn(new Urn('test', 'class'), null)->willReturn($obj);
 
-        self::assertSame($obj, $this->transformer->transform('test'));
-        self::assertSame($obj, $this->transformer->transform(new Urn('test')));
+        self::assertSame($obj, $this->transformer->transform('urn:::::class:test'));
+        self::assertSame($obj, $this->transformer->transform(new Urn('test', 'class')));
+    }
+
+    public function testShouldThrowOnInvalidURN(): void
+    {
+        $this->expectException(TransformationFailedException::class);
+        $this->expectExceptionMessage('Invalid URN');
+
+        $this->transformer->transform('test');
     }
 
     public function testShouldFailIfNotFound(): void
     {
         $this->expectException(TransformationFailedException::class);
-        $this->urnConverter->getItemFromUrn(new Urn('test'), null)
+        $this->expectExceptionMessage('Could not find the desired object with ID test');
+        $this->urnConverter->getItemFromUrn(Argument::any(), null)
+            ->shouldBeCalled()
             ->willThrow(ResourceNotFoundException::class);
 
-        $this->transformer->transform('test');
+        $this->transformer->transform('urn:::::class:test');
     }
 }

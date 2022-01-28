@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Solido\DataTransformers\Transformer;
 
+use DateTime;
+use DateTimeImmutable;
 use DateTimeInterface;
 use DateTimeZone;
-use Safe\DateTime;
-use Safe\DateTimeImmutable;
 use Solido\DataTransformers\Exception\TransformationFailedException;
 use Solido\DataTransformers\TransformerInterface;
 use Throwable;
@@ -38,12 +38,12 @@ class DateTimeTransformer implements TransformerInterface
         }
 
         if ($value instanceof DateTimeInterface) {
-            if ($value instanceof \DateTime && $this->asImmutable) {
-                return \DateTimeImmutable::createFromMutable($value);
+            if ($value instanceof DateTime && $this->asImmutable) {
+                return DateTimeImmutable::createFromMutable($value);
             }
 
-            if ($value instanceof \DateTimeImmutable && ! $this->asImmutable) {
-                return \DateTime::createFromImmutable($value);
+            if ($value instanceof DateTimeImmutable && ! $this->asImmutable) {
+                return DateTime::createFromImmutable($value);
             }
 
             return $value;
@@ -62,6 +62,7 @@ class DateTimeTransformer implements TransformerInterface
         }
 
         try {
+            /* @phpstan-ignore-next-line */
             $dateTime = $this->asImmutable ? new DateTimeImmutable($value) : new DateTime($value);
         } catch (Throwable $e) {
             throw new TransformationFailedException($e->getMessage(), $e->getCode(), $e);

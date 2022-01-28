@@ -12,7 +12,7 @@ use Solido\DataTransformers\Exception\TransformationFailedException;
 use Solido\DataTransformers\Transformer\PhoneNumberTransformer;
 use stdClass;
 
-class PhoneNumberToStringTransformerTest extends TestCase
+class PhoneNumberTransformerTest extends TestCase
 {
     private PhoneNumberTransformer $transformer;
 
@@ -66,5 +66,14 @@ class PhoneNumberToStringTransformerTest extends TestCase
         $phoneNumber = $this->transformer->transform($phone);
         self::assertInstanceOf(PhoneNumber::class, $phoneNumber);
         self::assertEquals($phone, PhoneNumberUtil::getInstance()->format($phoneNumber, PhoneNumberFormat::E164));
+    }
+
+    public function testReverseTransformShouldNotTransformPhoneNumberObject(): void
+    {
+        $phone = PhoneNumberUtil::getInstance()->parse('+393939898231');
+        $phoneNumber = $this->transformer->transform($phone);
+
+        self::assertInstanceOf(PhoneNumber::class, $phoneNumber);
+        self::assertEquals($phone, $phoneNumber);
     }
 }

@@ -8,9 +8,12 @@ use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
+use Solido\DataTransformers\Exception\TransformationFailedException;
 use Solido\DataTransformers\Transformer\MappingTransformer;
 use Solido\DataTransformers\TransformerInterface;
 use stdClass;
+
+use function fopen;
 
 class MappingTransformerTest extends TestCase
 {
@@ -58,5 +61,13 @@ class MappingTransformerTest extends TestCase
         }
 
         $this->transformer->transform($elements);
+    }
+
+    public function testTransformShouldThrowIfValueIsNotIterable(): void
+    {
+        $this->expectException(TransformationFailedException::class);
+        $this->expectExceptionMessage('Value is not iterable');
+
+        $this->transformer->transform(fopen('php://temp', 'rb+'));
     }
 }

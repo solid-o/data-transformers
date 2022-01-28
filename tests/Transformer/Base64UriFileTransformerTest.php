@@ -10,10 +10,11 @@ use Solido\DataTransformers\Transformer\Base64UriFileTransformer;
 use Solido\DataTransformers\TransformerInterface;
 use stdClass;
 use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class Base64UriFileTransformerTest extends TestCase
 {
-    protected const TEST_GIF_DATA = 'data:image/gif;base64,R0lGODdhAQABAIAAAP///////ywAAAAAAQABAAACAkQBADs=';
+    protected const TEST_GIF_DATA = 'data:image/gif;filename=test%20image.gif;last-modified=now;base64,R0lGODdhAQABAIAAAP///////ywAAAAAAQABAAACAkQBADs=';
     protected const TEST_TXT_DATA = 'data:text/plain,K%C3%A9vin%20Dunglas%0A';
     protected const TEST_TXT_CONTENT = "Kévin Dunglas\n";
 
@@ -72,8 +73,8 @@ class Base64UriFileTransformerTest extends TestCase
     public function testTransformShouldTransformBase64Data(): void
     {
         $file = $this->transformer->transform(self::TEST_GIF_DATA);
-
-        self::assertInstanceOf(File::class, $file);
+        self::assertInstanceOf(UploadedFile::class, $file);
+        self::assertEquals('test image.gif', $file->getClientOriginalName());
 
         $handle = $file->openFile();
         self::assertStringEqualsFile(__DIR__ . '/../Fixtures/test.gif', $handle->fread($handle->getSize()));

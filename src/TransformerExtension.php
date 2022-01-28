@@ -23,11 +23,11 @@ use const PHP_VERSION_ID;
 
 class TransformerExtension implements ExtensionInterface
 {
-    private Reader $reader;
+    private ?Reader $reader;
 
     public function __construct(?Reader $reader = null)
     {
-        $this->reader = $reader ?? new AnnotationReader();
+        $this->reader = $reader ?? (class_exists(AnnotationReader::class) ? new AnnotationReader() : null);
     }
 
     public function extend(ProxyBuilder $proxyBuilder): void
@@ -43,13 +43,17 @@ class TransformerExtension implements ExtensionInterface
         }
 
         foreach ($proxyBuilder->class->getMethods() as $reflectionMethod) {
-            if ($reflectionMethod->isPrivate() || $reflectionMethod->isFinal()) {
-                continue;
-            }
-
             $transform = $this->getMethodAttribute($reflectionMethod);
             if ($transform === null) {
                 continue;
+            }
+
+            if ($reflectionMethod->isPrivate()) {
+                throw new LogicException(sprintf('Method %s is private: cannot apply Transform attribute.', $reflectionMethod->getName()));
+            }
+
+            if ($reflectionMethod->isFinal()) {
+                throw new LogicException(sprintf('Method %s is final: cannot apply Transform attribute.', $reflectionMethod->getName()));
             }
 
             if ($reflectionMethod->getNumberOfParameters() !== 1) {
@@ -78,6 +82,7 @@ class TransformerExtension implements ExtensionInterface
 
     private function getPropertyAttribute(ReflectionProperty $property): ?Transform
     {
+        /** @infection-ignore-all */
         if (PHP_VERSION_ID >= 80000) {
             foreach ($property->getAttributes(Transform::class) as $attribute) {
                 $transform = $attribute->newInstance();
@@ -87,11 +92,12 @@ class TransformerExtension implements ExtensionInterface
             }
         }
 
-        return $this->reader->getPropertyAnnotation($property, Transform::class);
+        return $this->reader !== null ? $this->reader->getPropertyAnnotation($property, Transform::class) : null;
     }
 
     private function getMethodAttribute(ReflectionMethod $method): ?Transform
     {
+        /** @infection-ignore-all */
         if (PHP_VERSION_ID >= 80000) {
             foreach ($method->getAttributes(Transform::class) as $attribute) {
                 $transform = $attribute->newInstance();
@@ -101,6 +107,6 @@ class TransformerExtension implements ExtensionInterface
             }
         }
 
-        return $this->reader->getMethodAnnotation($method, Transform::class);
+        return $this->reader !== null ? $this->reader->getMethodAnnotation($method, Transform::class) : null;
     }
 }

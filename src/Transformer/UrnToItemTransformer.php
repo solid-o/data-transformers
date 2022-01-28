@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace Solido\DataTransformers\Transformer;
 
+use Solido\Common\Exception\InvalidArgumentException;
 use Solido\Common\Exception\ResourceNotFoundException;
 use Solido\Common\Urn\Urn;
 use Solido\Common\Urn\UrnConverterInterface;
 use Solido\DataTransformers\Exception\TransformationFailedException;
 use Solido\DataTransformers\TransformerInterface;
 
-use function get_class;
-use function gettype;
+use function get_debug_type;
 use function is_object;
 use function is_string;
 
@@ -26,6 +26,8 @@ class UrnToItemTransformer implements TransformerInterface
 
     /**
      * {@inheritdoc}
+     *
+     * @phpstan-param class-string<object>|null $acceptable
      */
     public function transform($value, ?string $acceptable = null): ?object
     {
@@ -33,15 +35,19 @@ class UrnToItemTransformer implements TransformerInterface
             return null;
         }
 
-        if (is_object($value) && ! $value instanceof Urn) {
-            return $value;
+        if (is_object($value)) {
+            if (! $value instanceof Urn) {
+                return $value;
+            }
+        } elseif (! is_string($value)) {
+            throw new TransformationFailedException('Expected a string. Got ' . get_debug_type($value));
         }
 
-        if (! is_string($value) && ! $value instanceof Urn) {
-            throw new TransformationFailedException('Expected a string. Got ' . (is_object($value) ? get_class($value) : gettype($value)));
+        try {
+            $urn = new Urn($value);
+        } catch (InvalidArgumentException $e) {
+            throw new TransformationFailedException('Invalid URN', 0, $e);
         }
-
-        $urn = new Urn($value);
 
         try {
             return $this->urnConverter->getItemFromUrn($urn, $acceptable);

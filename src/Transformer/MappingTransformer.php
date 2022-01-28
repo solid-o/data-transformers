@@ -4,7 +4,10 @@ declare(strict_types=1);
 
 namespace Solido\DataTransformers\Transformer;
 
+use Solido\DataTransformers\Exception\TransformationFailedException;
 use Solido\DataTransformers\TransformerInterface;
+
+use function is_iterable;
 
 class MappingTransformer implements TransformerInterface
 {
@@ -22,6 +25,10 @@ class MappingTransformer implements TransformerInterface
     {
         if (empty($value)) {
             return [];
+        }
+
+        if (! is_iterable($value)) {
+            throw new TransformationFailedException('Value is not iterable');
         }
 
         $transformed = [];
