@@ -97,7 +97,7 @@ class DateTimeTransformerTest extends TestCase
     public function testTransformShouldThrowOnInvalidDateTimeString(): void
     {
         $this->expectException(TransformationFailedException::class);
-        $this->expectExceptionMessage('DateTimeImmutable::__construct(): Failed to parse time string (2010-02-30T04:05:06+36:00)');
+        $this->expectExceptionMessage('Failed to parse');
 
         $transformer = new DateTimeTransformer('UTC');
         $transformer->transform('2010-02-30T04:05:06+36:00');

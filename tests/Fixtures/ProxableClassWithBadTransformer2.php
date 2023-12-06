@@ -8,6 +8,6 @@ use Solido\DataTransformers\Annotation\Transform;
 
 class ProxableClassWithBadTransformer2
 {
-    /** @Transform(transformer="stdClass") */
+    #[Transform(transformer: "stdClass")]
     public string $foo;
 }

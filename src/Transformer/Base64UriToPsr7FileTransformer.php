@@ -17,24 +17,19 @@ use const UPLOAD_ERR_OK;
  */
 class Base64UriToPsr7FileTransformer extends Base64UriFileTransformer
 {
-    private UploadedFileFactoryInterface $uploadedFileFactory;
-    private StreamFactoryInterface $streamFactory;
-
-    public function __construct(UploadedFileFactoryInterface $uploadedFileFactory, StreamFactoryInterface $streamFactory)
+    public function __construct(private UploadedFileFactoryInterface $uploadedFileFactory, private StreamFactoryInterface $streamFactory)
     {
-        $this->uploadedFileFactory = $uploadedFileFactory;
-        $this->streamFactory = $streamFactory;
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
-    protected function shouldTransform($value): bool
+    protected function shouldTransform(mixed $value): bool
     {
         return ! $value instanceof UploadedFileInterface;
     }
 
-    protected function createFile(string $data, ?string $originalName, ?string $mime): object
+    protected function createFile(string $data, string|null $originalName, string|null $mime): object
     {
         $stream = $this->streamFactory->createStream($data);
 

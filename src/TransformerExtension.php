@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Solido\DataTransformers;
 
-use Doctrine\Common\Annotations\AnnotationReader;
-use Doctrine\Common\Annotations\Reader;
 use LogicException;
 use ReflectionMethod;
 use ReflectionProperty;
@@ -17,19 +15,10 @@ use Solido\DtoManagement\Proxy\Extension\ExtensionInterface;
 use function assert;
 use function class_exists;
 use function is_subclass_of;
-use function Safe\sprintf;
-
-use const PHP_VERSION_ID;
+use function sprintf;
 
 class TransformerExtension implements ExtensionInterface
 {
-    private ?Reader $reader;
-
-    public function __construct(?Reader $reader = null)
-    {
-        $this->reader = $reader ?? (class_exists(AnnotationReader::class) ? new AnnotationReader() : null);
-    }
-
     public function extend(ProxyBuilder $proxyBuilder): void
     {
         foreach ($proxyBuilder->properties->getAccessibleProperties() as $property) {
@@ -80,33 +69,27 @@ class TransformerExtension implements ExtensionInterface
         }
     }
 
-    private function getPropertyAttribute(ReflectionProperty $property): ?Transform
+    private function getPropertyAttribute(ReflectionProperty $property): Transform|null
     {
-        /** @infection-ignore-all */
-        if (PHP_VERSION_ID >= 80000) {
-            foreach ($property->getAttributes(Transform::class) as $attribute) {
-                $transform = $attribute->newInstance();
-                assert($transform instanceof Transform);
+        foreach ($property->getAttributes(Transform::class) as $attribute) {
+            $transform = $attribute->newInstance();
+            assert($transform instanceof Transform);
 
-                return $transform;
-            }
+            return $transform;
         }
 
-        return $this->reader !== null ? $this->reader->getPropertyAnnotation($property, Transform::class) : null;
+        return null;
     }
 
-    private function getMethodAttribute(ReflectionMethod $method): ?Transform
+    private function getMethodAttribute(ReflectionMethod $method): Transform|null
     {
-        /** @infection-ignore-all */
-        if (PHP_VERSION_ID >= 80000) {
-            foreach ($method->getAttributes(Transform::class) as $attribute) {
-                $transform = $attribute->newInstance();
-                assert($transform instanceof Transform);
+        foreach ($method->getAttributes(Transform::class) as $attribute) {
+            $transform = $attribute->newInstance();
+            assert($transform instanceof Transform);
 
-                return $transform;
-            }
+            return $transform;
         }
 
-        return $this->reader !== null ? $this->reader->getMethodAnnotation($method, Transform::class) : null;
+            return null;
     }
 }

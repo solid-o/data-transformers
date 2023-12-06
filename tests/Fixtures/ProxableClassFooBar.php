@@ -9,6 +9,6 @@ use Solido\DataTransformers\Transformer\BooleanTransformer;
 
 class ProxableClassFooBar
 {
-    /** @Transform(BooleanTransformer::class) */
+    #[Transform(BooleanTransformer::class)]
     public $shouldString;
 }

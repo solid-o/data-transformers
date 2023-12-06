@@ -23,9 +23,9 @@ class BooleanTransformer implements TransformerInterface
     public const FALSE_VALUES = ['0', 'false', 'no', 'off', 'n', 'f'];
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
-    public function transform($value): ?bool
+    public function transform($value): bool|null
     {
         if ($value === null) {
             return null;

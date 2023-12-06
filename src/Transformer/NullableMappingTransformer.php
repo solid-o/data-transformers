@@ -7,9 +7,9 @@ namespace Solido\DataTransformers\Transformer;
 class NullableMappingTransformer extends MappingTransformer
 {
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
-    public function transform($value): ?array
+    public function transform($value): array|null
     {
         if ($value === null) {
             return null;

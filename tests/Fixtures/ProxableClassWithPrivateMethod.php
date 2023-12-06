@@ -9,9 +9,7 @@ use Solido\DataTransformers\Transformer\BooleanTransformer;
 
 class ProxableClassWithPrivateMethod
 {
-    /**
-     * @Transform(BooleanTransformer::class)
-     */
+    #[Transform(BooleanTransformer::class)]
     private function setBool(bool $newBool): void
     {
     }

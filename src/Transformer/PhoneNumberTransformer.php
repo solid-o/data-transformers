@@ -15,9 +15,9 @@ use function is_string;
 class PhoneNumberTransformer implements TransformerInterface
 {
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
-    public function transform($value): ?PhoneNumber
+    public function transform($value): PhoneNumber|null
     {
         if ($value === null || $value === '') {
             return null;

@@ -15,9 +15,9 @@ use function Safe\preg_match;
 class DateTransformer implements TransformerInterface
 {
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
-    public function transform($value): ?DateTimeInterface
+    public function transform($value): DateTimeInterface|null
     {
         if ($value === null || $value === '') {
             return null;
@@ -31,7 +31,6 @@ class DateTransformer implements TransformerInterface
             throw new TransformationFailedException('Expected a string');
         }
 
-        /* @phpstan-ignore-next-line */
         $dateTime = new DateTimeImmutable('midnight');
         if (preg_match('#(\d{2})/(\d{2})/(\d{4,})#', $value, $matches)) {
             return $dateTime->setDate((int) $matches[3], (int) $matches[2], (int) $matches[1]);

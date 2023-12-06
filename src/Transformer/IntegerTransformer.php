@@ -15,9 +15,9 @@ use function is_string;
 class IntegerTransformer implements TransformerInterface
 {
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
-    public function transform($value): ?int
+    public function transform($value): int|null
     {
         if ($value === null || $value === '') {
             return null;

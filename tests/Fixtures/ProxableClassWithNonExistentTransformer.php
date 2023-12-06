@@ -8,6 +8,6 @@ use Solido\DataTransformers\Annotation\Transform;
 
 class ProxableClassWithNonExistentTransformer
 {
-    /** @Transform(transformer="NonExistent") */
+    #[Transform(transformer: "NonExistent")]
     public string $foo;
 }

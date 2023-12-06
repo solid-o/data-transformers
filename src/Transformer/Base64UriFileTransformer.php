@@ -26,10 +26,7 @@ class Base64UriFileTransformer implements TransformerInterface
 {
     private const DATA_URI_PATTERN = '/^data:([a-z0-9][a-z0-9\!\#\$\&\-\^\_\+\.]{0,126}\/[a-z0-9][a-z0-9\!\#\$\&\-\^\_\+\.]{0,126})((?:;[a-z0-9\-]+=[^\/\\\?\*:\|\"<>;=]+)*?)?(;base64)?,([a-z0-9\!\$\&\\\'\,\(\)\*\+\,\;\=\-\.\_\~\:\@\/\?\%\s]*\s*)$/i';
 
-    /**
-     * {@inheritdoc}
-     */
-    public function transform($value): ?object
+    public function transform(mixed $value): object|null
     {
         if ($value === null) {
             return null;
@@ -52,7 +49,7 @@ class Base64UriFileTransformer implements TransformerInterface
         if (! empty($attributes)) {
             $attributes = array_map(
                 static fn ($value) => array_map('urldecode', explode('=', $value)),
-                explode(';', $attributes)
+                explode(';', $attributes),
             );
 
             $attributes = array_column($attributes, 1, 0);
@@ -75,15 +72,13 @@ class Base64UriFileTransformer implements TransformerInterface
 
     /**
      * Whether the passed values should be transformed.
-     *
-     * @param mixed $value
      */
-    protected function shouldTransform($value): bool
+    protected function shouldTransform(mixed $value): bool
     {
         return ! $value instanceof File;
     }
 
-    protected function createFile(string $data, ?string $originalName, ?string $mime): object
+    protected function createFile(string $data, string|null $originalName, string|null $mime): object
     {
         return new SyntheticUploadedFile($data, $originalName, $mime);
     }

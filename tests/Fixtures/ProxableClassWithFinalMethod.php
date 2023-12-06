@@ -9,9 +9,7 @@ use Solido\DataTransformers\Transformer\BooleanTransformer;
 
 class ProxableClassWithFinalMethod
 {
-    /**
-     * @Transform(BooleanTransformer::class)
-     */
+    #[Transform(BooleanTransformer::class)]
     final public function setBool(bool $newBool): void
     {
     }

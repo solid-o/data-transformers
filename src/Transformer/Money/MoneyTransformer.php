@@ -18,9 +18,9 @@ use function is_numeric;
 class MoneyTransformer implements TransformerInterface
 {
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
-    public function transform($value): ?Money
+    public function transform($value): Money|null
     {
         if ($value === null || $value === '') {
             return null;

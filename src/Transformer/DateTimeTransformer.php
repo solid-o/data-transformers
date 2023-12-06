@@ -19,19 +19,14 @@ use function Safe\sprintf;
 
 class DateTimeTransformer implements TransformerInterface
 {
-    private ?string $outputTimezone;
-    private bool $asImmutable;
-
-    public function __construct(?string $outputTimezone = null, bool $asImmutable = true)
+    public function __construct(private string|null $outputTimezone = null, private bool $asImmutable = true)
     {
-        $this->outputTimezone = $outputTimezone;
-        $this->asImmutable = $asImmutable;
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
-    public function transform($value): ?DateTimeInterface
+    public function transform($value): DateTimeInterface|null
     {
         if ($value === null) {
             return null;
@@ -62,7 +57,6 @@ class DateTimeTransformer implements TransformerInterface
         }
 
         try {
-            /* @phpstan-ignore-next-line */
             $dateTime = $this->asImmutable ? new DateTimeImmutable($value) : new DateTime($value);
         } catch (Throwable $e) {
             throw new TransformationFailedException($e->getMessage(), $e->getCode(), $e);

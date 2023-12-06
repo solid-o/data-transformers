@@ -17,19 +17,16 @@ use function is_string;
 
 class UrnToItemTransformer implements TransformerInterface
 {
-    private UrnConverterInterface $urnConverter;
-
-    public function __construct(UrnConverterInterface $urnConverter)
+    public function __construct(private UrnConverterInterface $urnConverter)
     {
-        $this->urnConverter = $urnConverter;
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      *
      * @phpstan-param class-string<object>|null $acceptable
      */
-    public function transform($value, ?string $acceptable = null): ?object
+    public function transform($value, string|null $acceptable = null): object|null
     {
         if ($value === null || $value === '') {
             return null;

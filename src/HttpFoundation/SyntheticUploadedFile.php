@@ -25,9 +25,9 @@ class SyntheticUploadedFile extends UploadedFile
 {
     public function __construct(
         string $contents,
-        ?string $originalName = null,
-        ?string $mimeType = null,
-        ?int $error = null
+        string|null $originalName = null,
+        string|null $mimeType = null,
+        int|null $error = null,
     ) {
         $tempPath = tempnam(sys_get_temp_dir(), 'synt_uploaded_file');
         file_put_contents($tempPath, $contents);
@@ -35,9 +35,7 @@ class SyntheticUploadedFile extends UploadedFile
         parent::__construct($tempPath, $originalName ?? 'up_' . mt_rand(), $mimeType, $error, false);
     }
 
-    /**
-     * @infection-ignore-all
-     */
+    /** @infection-ignore-all */
     public function __destruct()
     {
         if (! file_exists($this->getPathname())) {
@@ -46,7 +44,7 @@ class SyntheticUploadedFile extends UploadedFile
 
         try {
             unlink($this->getPathname());
-        } catch (FilesystemException $e) {
+        } catch (FilesystemException) {
             // @ignoreException
         }
     }
@@ -56,10 +54,8 @@ class SyntheticUploadedFile extends UploadedFile
         return true;
     }
 
-    /**
-     * @infection-ignore-all
-     */
-    public function move(string $directory, ?string $name = null): File
+    /** @infection-ignore-all */
+    public function move(string $directory, string|null $name = null): File
     {
         if ($this->isValid()) {
             $target = $this->getTargetFile($directory, $name);
@@ -72,7 +68,7 @@ class SyntheticUploadedFile extends UploadedFile
 
             try {
                 chmod($target->getPathname(), 0666 & ~umask());
-            } catch (FilesystemException $e) {
+            } catch (FilesystemException) {
                 // @ignoreException
             }
 

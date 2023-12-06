@@ -11,9 +11,7 @@ class ProxableClassWithMultipleParams
 {
     public bool $newBool;
 
-    /**
-     * @Transform(BooleanTransformer::class)
-     */
+    #[Transform(BooleanTransformer::class)]
     public function setNewBool(bool $newBool, string $newValue): void
     {
     }

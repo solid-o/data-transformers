@@ -16,9 +16,9 @@ use function Safe\sprintf;
 class PageTokenTransformer implements TransformerInterface
 {
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
-    public function transform($value): ?PageToken
+    public function transform($value): PageToken|null
     {
         if ($value === null || $value === '') {
             return null;

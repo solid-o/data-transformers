@@ -52,30 +52,10 @@ class TransformerExtensionTest extends TestCase
         self::assertInstanceOf(DateTimeInterface::class, $obj->dateTime);
     }
 
-    /**
-     * @requires PHP >= 8.0
-     */
-    public function testReadTransformAttributes(): void
-    {
-        $configuration = new Configuration();
-        $configuration->addExtension($this->extension);
-
-        $factory = new AccessInterceptorFactory($configuration);
-        $className = $factory->generateProxy(ProxableClassWithAttributes::class);
-
-        $obj = new $className();
-        $obj->boolean = '1';
-        $obj->dateTime = '2020-05-18T00:00:00Z';
-
-        self::assertIsBool($obj->boolean);
-        self::assertTrue($obj->boolean);
-        self::assertInstanceOf(DateTimeInterface::class, $obj->dateTime);
-    }
-
     public function testShouldCheckTransformerExistence(): void
     {
         $this->expectException(LogicException::class);
-        $this->expectDeprecationMessage('Transformer class "NonExistent" does not exist.');
+        $this->expectExceptionMessage('Transformer class "NonExistent" does not exist.');
 
         $configuration = new Configuration();
         $configuration->addExtension($this->extension);
@@ -87,7 +67,7 @@ class TransformerExtensionTest extends TestCase
     public function testShouldCheckTransformerImplementsTransformerInterface(): void
     {
         $this->expectException(LogicException::class);
-        $this->expectDeprecationMessage('Transformer "stdClass" does not implement "Solido\DataTransformers\TransformerInterface".');
+        $this->expectExceptionMessage('Transformer "stdClass" does not implement "Solido\DataTransformers\TransformerInterface".');
 
         $configuration = new Configuration();
         $configuration->addExtension($this->extension);
@@ -135,7 +115,7 @@ class TransformerExtensionTest extends TestCase
     public function testShouldThrowOnPrivateMethods(): void
     {
         $this->expectException(LogicException::class);
-        $this->expectDeprecationMessage('Method setBool is private: cannot apply Transform attribute.');
+        $this->expectExceptionMessage('Method setBool is private: cannot apply Transform attribute.');
 
         $configuration = new Configuration();
         $configuration->addExtension($this->extension);
@@ -147,7 +127,7 @@ class TransformerExtensionTest extends TestCase
     public function testShouldThrowOnFinalMethods(): void
     {
         $this->expectException(LogicException::class);
-        $this->expectDeprecationMessage('Method setBool is final: cannot apply Transform attribute.');
+        $this->expectExceptionMessage('Method setBool is final: cannot apply Transform attribute.');
 
         $configuration = new Configuration();
         $configuration->addExtension($this->extension);
@@ -159,7 +139,7 @@ class TransformerExtensionTest extends TestCase
     public function testShouldThrowOnMethodsWithMultipleParameters(): void
     {
         $this->expectException(LogicException::class);
-        $this->expectDeprecationMessage('Method setNewBool requires 2 parameters, but Transform annotation can be used only on single-argument method.');
+        $this->expectExceptionMessage('Method setNewBool requires 2 parameters, but Transform annotation can be used only on single-argument method.');
 
         $configuration = new Configuration();
         $configuration->addExtension($this->extension);

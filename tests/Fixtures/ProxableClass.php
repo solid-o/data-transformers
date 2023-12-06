@@ -13,10 +13,10 @@ class ProxableClass
 {
     public bool $newBool;
 
-    /** @Transform(BooleanTransformer::class) */
+    #[Transform(BooleanTransformer::class)]
     public bool $boolean;
 
-    /** @Transform(DateTimeTransformer::class) */
+    #[Transform(DateTimeTransformer::class)]
     public DateTimeInterface $dateTime;
 
     public function method1(): void
@@ -27,9 +27,7 @@ class ProxableClass
     {
     }
 
-    /**
-     * @Transform(BooleanTransformer::class)
-     */
+    #[Transform(BooleanTransformer::class)]
     public function setNewBool(bool $newBool): void
     {
         $this->newBool = $newBool;

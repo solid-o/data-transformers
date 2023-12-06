@@ -11,17 +11,14 @@ use function is_iterable;
 
 class MappingTransformer implements TransformerInterface
 {
-    private TransformerInterface $innerTransformer;
-
-    public function __construct(TransformerInterface $innerTransformer)
+    public function __construct(private TransformerInterface $innerTransformer)
     {
-        $this->innerTransformer = $innerTransformer;
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
-    public function transform($value): ?array
+    public function transform($value): array|null
     {
         if (empty($value)) {
             return [];

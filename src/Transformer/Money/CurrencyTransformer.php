@@ -16,9 +16,9 @@ use function is_string;
 class CurrencyTransformer implements TransformerInterface
 {
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
-    public function transform($value): ?Currency
+    public function transform($value): Currency|null
     {
         if ($value === null || $value === '') {
             return null;

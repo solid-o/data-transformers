@@ -16,10 +16,7 @@ class ChainTransformer implements TransformerInterface
         $this->transformers = $transformers;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function transform($value)
+    public function transform(mixed $value): mixed
     {
         foreach ($this->transformers as $transformer) {
             $value = $transformer->transform($value);
