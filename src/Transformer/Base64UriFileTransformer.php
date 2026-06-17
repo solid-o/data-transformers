@@ -12,6 +12,7 @@ use Symfony\Component\HttpFoundation\File\File;
 
 use function array_column;
 use function array_map;
+use function count;
 use function explode;
 use function is_object;
 use function is_string;
@@ -40,7 +41,8 @@ class Base64UriFileTransformer implements TransformerInterface
             throw new TransformationFailedException('Cannot transform a non-string value to an instance of UploadedFile.');
         }
 
-        if (! preg_match(self::DATA_URI_PATTERN, $value, $matches)) {
+        $matches = [];
+        if (! preg_match(self::DATA_URI_PATTERN, $value, $matches) || $matches === null || count($matches) < 5) {
             throw new TransformationFailedException('Invalid data: URI provided');
         }
 

@@ -14,7 +14,7 @@ use function mt_rand;
 use function Safe\chmod;
 use function Safe\file_put_contents;
 use function Safe\rename;
-use function Safe\sprintf;
+use function sprintf;
 use function Safe\tempnam;
 use function Safe\unlink;
 use function strip_tags;

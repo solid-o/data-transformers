@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Solido\DataTransformers\Tests\Transformer\Money;
 
 use Money\Money;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Solido\DataTransformers\Exception\TransformationFailedException;
 use Solido\DataTransformers\Transformer\Money\MoneyTransformer;
@@ -19,15 +20,13 @@ class MoneyTransformerTest extends TestCase
         $this->transformer = new MoneyTransformer();
     }
 
-    public function provideEmptyValues(): iterable
+    public static function provideEmptyValues(): iterable
     {
         yield [null];
         yield [''];
     }
 
-    /**
-     * @dataProvider provideEmptyValues
-     */
+    #[DataProvider('provideEmptyValues')]
     public function testTransformShouldReturnNullOnNullValues(?string $value): void
     {
         self::assertNull($this->transformer->transform($value));
@@ -40,16 +39,14 @@ class MoneyTransformerTest extends TestCase
         $this->transformer->transform(['amount' => 'i am not numeric', 'currency' => 'currency']);
     }
 
-    public function provideNonArrayNorNumericValue(): iterable
+    public static function provideNonArrayNorNumericValue(): iterable
     {
         yield [['foobar']];
         yield [new stdClass()];
         yield ['string'];
     }
 
-    /**
-     * @dataProvider provideNonArrayNorNumericValue
-     */
+    #[DataProvider('provideNonArrayNorNumericValue')]
     public function testTransformShouldThrowOnNonArrayNorNumericValue($value): void
     {
         $this->expectException(TransformationFailedException::class);
@@ -57,7 +54,7 @@ class MoneyTransformerTest extends TestCase
         $this->transformer->transform($value);
     }
 
-    public function provideValidTransformValues(): iterable
+    public static function provideValidTransformValues(): iterable
     {
         yield [['amount' => '50000', 'currency' => 'EUR']];
         yield [['amount' => 50000, 'currency' => 'EUR']];
@@ -66,9 +63,7 @@ class MoneyTransformerTest extends TestCase
         yield [Money::EUR('50000')];
     }
 
-    /**
-     * @dataProvider provideValidTransformValues
-     */
+    #[DataProvider('provideValidTransformValues')]
     public function testTransformShouldWork($value): void
     {
         self::assertEquals(Money::EUR('50000'), $this->transformer->transform($value));

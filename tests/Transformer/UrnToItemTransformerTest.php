@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Solido\DataTransformers\Tests\Transformer;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Prophecy\PhpUnit\ProphecyTrait;
@@ -45,7 +46,7 @@ class UrnToItemTransformerTest extends TestCase
         self::assertSame($obj, $this->transformer->transform($obj));
     }
 
-    public function provideNotUrn(): iterable
+    public static function provideNotUrn(): iterable
     {
         yield [true];
         yield [42];
@@ -53,9 +54,7 @@ class UrnToItemTransformerTest extends TestCase
         yield [fopen('php://temp', 'rb')];
     }
 
-    /**
-     * @dataProvider provideNotUrn
-     */
+    #[DataProvider('provideNotUrn')]
     public function testShouldThrowIfNotUrnIsPassed($value): void
     {
         $this->expectException(TransformationFailedException::class);

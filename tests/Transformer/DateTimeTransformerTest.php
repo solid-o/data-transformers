@@ -6,13 +6,14 @@ namespace Solido\DataTransformers\Tests\Transformer;
 
 use DateTime;
 use DateTimeImmutable;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Solido\DataTransformers\Exception\TransformationFailedException;
 use Solido\DataTransformers\Transformer\DateTimeTransformer;
 
 class DateTimeTransformerTest extends TestCase
 {
-    public function transformProvider(): iterable
+    public static function transformProvider(): iterable
     {
         return [
             ['UTC', '2010-02-03 04:05:06 UTC', '2010-02-03T04:05:06Z'],
@@ -30,9 +31,7 @@ class DateTimeTransformerTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider transformProvider
-     */
+    #[DataProvider('transformProvider')]
     public function testTransform(string $toTz, ?string $to, string $from): void
     {
         $transformer = new DateTimeTransformer($toTz, false);
@@ -82,9 +81,7 @@ class DateTimeTransformerTest extends TestCase
         $transformer->transform('2010-04-31T04:05Z');
     }
 
-    /**
-     * @dataProvider invalidDateStringProvider
-     */
+    #[DataProvider('invalidDateStringProvider')]
     public function testTransformExpectsValidDateString(string $date): void
     {
         $this->expectException(TransformationFailedException::class);
@@ -103,7 +100,7 @@ class DateTimeTransformerTest extends TestCase
         $transformer->transform('2010-02-30T04:05:06+36:00');
     }
 
-    public function invalidDateStringProvider(): iterable
+    public static function invalidDateStringProvider(): iterable
     {
         return [
             'invalid month' => ['2010-2010-01'],

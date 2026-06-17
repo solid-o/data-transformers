@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Solido\DataTransformers\Tests\Transformer;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Solido\DataTransformers\Exception\TransformationFailedException;
 use Solido\DataTransformers\Transformer\IntegerTransformer;
@@ -18,15 +19,13 @@ class IntegerTransformerTest extends TestCase
         $this->transformer = new IntegerTransformer();
     }
 
-    public function provideEmptyValues(): iterable
+    public static function provideEmptyValues(): iterable
     {
         yield [null];
         yield [''];
     }
 
-    /**
-     * @dataProvider provideEmptyValues
-     */
+    #[DataProvider('provideEmptyValues')]
     public function testTransformShouldReturnNullOnEmptyValue(?string $value): void
     {
         self::assertNull($this->transformer->transform($value));
@@ -39,16 +38,14 @@ class IntegerTransformerTest extends TestCase
         self::assertEquals($value, $this->transformer->transform($value));
     }
 
-    public function provideNonNumericValues(): iterable
+    public static function provideNonNumericValues(): iterable
     {
         yield ['i am not a number'];
         yield [new stdClass()];
         yield [[]];
     }
 
-    /**
-     * @dataProvider provideNonNumericValues
-     */
+    #[DataProvider('provideNonNumericValues')]
     public function testTransformShouldThrowOnNonNumericStrings($value): void
     {
         $this->expectException(TransformationFailedException::class);
@@ -56,15 +53,13 @@ class IntegerTransformerTest extends TestCase
         $this->transformer->transform($value);
     }
 
-    /**
-     * @dataProvider provideNumericValues
-     */
+    #[DataProvider('provideNumericValues')]
     public function testTransformerShouldTransformNumericStrings($expected, $value): void
     {
         self::assertEquals($expected, $this->transformer->transform($value));
     }
 
-    public function provideNumericValues(): iterable
+    public static function provideNumericValues(): iterable
     {
         yield [12345, '12345'];
         yield [1, '1.0'];

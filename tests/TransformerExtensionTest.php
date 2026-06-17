@@ -19,7 +19,7 @@ use Solido\DataTransformers\Tests\Fixtures\ProxableClassWithPrivateMethod;
 use Solido\DataTransformers\TransformerExtension;
 use Solido\DtoManagement\Proxy\Factory\AccessInterceptorFactory;
 use Solido\DtoManagement\Proxy\Factory\Configuration;
-use function Safe\sprintf;
+use function sprintf;
 
 class TransformerExtensionTest extends TestCase
 {

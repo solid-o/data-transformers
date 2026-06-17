@@ -12,7 +12,6 @@ use Solido\DtoManagement\Proxy\Builder\Interceptor;
 use Solido\DtoManagement\Proxy\Builder\ProxyBuilder;
 use Solido\DtoManagement\Proxy\Extension\ExtensionInterface;
 
-use function assert;
 use function class_exists;
 use function is_subclass_of;
 use function sprintf;
@@ -73,7 +72,6 @@ class TransformerExtension implements ExtensionInterface
     {
         foreach ($property->getAttributes(Transform::class) as $attribute) {
             $transform = $attribute->newInstance();
-            assert($transform instanceof Transform);
 
             return $transform;
         }
@@ -85,7 +83,6 @@ class TransformerExtension implements ExtensionInterface
     {
         foreach ($method->getAttributes(Transform::class) as $attribute) {
             $transform = $attribute->newInstance();
-            assert($transform instanceof Transform);
 
             return $transform;
         }

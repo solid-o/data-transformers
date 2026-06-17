@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Solido\DataTransformers\Tests\Transformer\Money;
 
 use Money\Currency;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Solido\DataTransformers\Exception\TransformationFailedException;
 use Solido\DataTransformers\Transformer\Money\CurrencyTransformer;
@@ -19,13 +20,13 @@ class CurrencyTransformerTest extends TestCase
         $this->transformer = new CurrencyTransformer();
     }
 
-    public function provideEmptyValues(): iterable
+    public static function provideEmptyValues(): iterable
     {
         yield [null];
         yield [''];
     }
 
-    public function provideNonStringValues(): iterable
+    public static function provideNonStringValues(): iterable
     {
         yield [0.23];
         yield [47];
@@ -34,17 +35,13 @@ class CurrencyTransformerTest extends TestCase
         yield [new stdClass()];
     }
 
-    /**
-     * @dataProvider provideEmptyValues
-     */
+    #[DataProvider('provideEmptyValues')]
     public function testTransformShouldReturnNullOnNullValues(?string $value): void
     {
         self::assertNull($this->transformer->transform($value));
     }
 
-    /**
-     * @dataProvider provideNonStringValues
-     */
+    #[DataProvider('provideNonStringValues')]
     public function testTransformShouldThrowOnNonValidValues($value): void
     {
         $this->expectException(TransformationFailedException::class);
@@ -52,15 +49,13 @@ class CurrencyTransformerTest extends TestCase
         $this->transformer->transform($value);
     }
 
-    public function provideValidTransformValues(): iterable
+    public static function provideValidTransformValues(): iterable
     {
         yield ['EUR'];
         yield [new Currency('EUR')];
     }
 
-    /**
-     * @dataProvider provideValidTransformValues
-     */
+    #[DataProvider('provideValidTransformValues')]
     public function testTransformShouldWork($value): void
     {
         self::assertEquals(new Currency('EUR'), $this->transformer->transform($value));

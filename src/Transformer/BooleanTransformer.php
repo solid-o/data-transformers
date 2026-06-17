@@ -11,7 +11,7 @@ use function gettype;
 use function in_array;
 use function is_bool;
 use function is_scalar;
-use function Safe\sprintf;
+use function sprintf;
 use function strtolower;
 
 /**

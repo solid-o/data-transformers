@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Solido\DataTransformers\Tests\Transformer;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Solido\DataTransformers\Exception\TransformationFailedException;
 use Solido\DataTransformers\Transformer\BooleanTransformer;
@@ -23,15 +24,13 @@ class BooleanTransformerTest extends TestCase
         self::assertNull($this->transformer->transform(null));
     }
 
-    public function provideBooleanValues(): iterable
+    public static function provideBooleanValues(): iterable
     {
         yield [true];
         yield [false];
     }
 
-    /**
-     * @dataProvider provideBooleanValues
-     */
+    #[DataProvider('provideBooleanValues')]
     public function testTransformShouldReturnBoolOnBooleans(bool $value): void
     {
         self::assertEquals($value, $this->transformer->transform($value));
@@ -51,7 +50,7 @@ class BooleanTransformerTest extends TestCase
         $this->transformer->transform([]);
     }
 
-    public function provideFalseValues(): iterable
+    public static function provideFalseValues(): iterable
     {
         foreach (BooleanTransformer::FALSE_VALUES as $falseValue) {
             yield [$falseValue];
@@ -62,15 +61,13 @@ class BooleanTransformerTest extends TestCase
         yield [false];
     }
 
-    /**
-     * @dataProvider provideFalseValues
-     */
+    #[DataProvider('provideFalseValues')]
     public function testTransformShouldReturnFalseOnFalseValues($value): void
     {
         self::assertFalse($this->transformer->transform($value));
     }
 
-    public function provideTrueValues(): iterable
+    public static function provideTrueValues(): iterable
     {
         foreach (BooleanTransformer::TRUE_VALUES as $trueValue) {
             yield [$trueValue];
@@ -81,9 +78,7 @@ class BooleanTransformerTest extends TestCase
         yield [1.0];
     }
 
-    /**
-     * @dataProvider provideTrueValues
-     */
+    #[DataProvider('provideTrueValues')]
     public function testTransformShouldReturnTrueOnTrueValues($value): void
     {
         self::assertTrue($this->transformer->transform($value));

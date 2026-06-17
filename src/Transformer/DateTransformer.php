@@ -9,6 +9,7 @@ use DateTimeInterface;
 use Solido\DataTransformers\Exception\TransformationFailedException;
 use Solido\DataTransformers\TransformerInterface;
 
+use function count;
 use function is_string;
 use function Safe\preg_match;
 
@@ -32,11 +33,13 @@ class DateTransformer implements TransformerInterface
         }
 
         $dateTime = new DateTimeImmutable('midnight');
-        if (preg_match('#(\d{2})/(\d{2})/(\d{4,})#', $value, $matches)) {
+        $matches = [];
+        if (preg_match('#(\d{2})/(\d{2})/(\d{4,})#', $value, $matches) && $matches !== null && count($matches) >= 4) {
             return $dateTime->setDate((int) $matches[3], (int) $matches[2], (int) $matches[1]);
         }
 
-        if (preg_match('/(\d{4,})-(\d{2})-(\d{2})/', $value, $matches)) {
+        $matches = [];
+        if (preg_match('/(\d{4,})-(\d{2})-(\d{2})/', $value, $matches) && $matches !== null && count($matches) >= 4) {
             return $dateTime->setDate((int) $matches[1], (int) $matches[2], (int) $matches[3]);
         }
 

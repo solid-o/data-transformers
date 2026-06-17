@@ -17,6 +17,8 @@ class MappingTransformer implements TransformerInterface
 
     /**
      * {@inheritDoc}
+     *
+     * @return array<array-key, mixed>|null
      */
     public function transform($value): array|null
     {

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Solido\DataTransformers\Tests\Transformer;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Solido\DataTransformers\Exception\TransformationFailedException;
 use Solido\DataTransformers\Transformer\Base64UriFileTransformer;
@@ -37,7 +38,7 @@ class Base64UriFileTransformerTest extends TestCase
         self::assertSame($file, $this->transformer->transform($file));
     }
 
-    public function provideNonString(): iterable
+    public static function provideNonString(): iterable
     {
         yield [0.23];
         yield [47];
@@ -45,9 +46,7 @@ class Base64UriFileTransformerTest extends TestCase
         yield [new stdClass()];
     }
 
-    /**
-     * @dataProvider provideNonString
-     */
+    #[DataProvider('provideNonString')]
     public function testTransformShouldThrowOnNonStringValues($value): void
     {
         $this->expectException(TransformationFailedException::class);

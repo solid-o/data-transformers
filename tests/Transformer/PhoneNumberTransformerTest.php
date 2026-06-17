@@ -7,6 +7,7 @@ namespace Solido\DataTransformers\Tests\Transformer;
 use libphonenumber\PhoneNumber;
 use libphonenumber\PhoneNumberFormat;
 use libphonenumber\PhoneNumberUtil;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Solido\DataTransformers\Exception\TransformationFailedException;
 use Solido\DataTransformers\Transformer\PhoneNumberTransformer;
@@ -26,7 +27,7 @@ class PhoneNumberTransformerTest extends TestCase
         self::assertEquals('', $this->transformer->transform(null));
     }
 
-    public function nonPhoneNumberArguments(): iterable
+    public static function nonPhoneNumberArguments(): iterable
     {
         yield ['i am not a phone number'];
         yield [new stdClass()];
@@ -41,7 +42,7 @@ class PhoneNumberTransformerTest extends TestCase
         self::assertEquals(null, $this->transformer->transform(''));
     }
 
-    public function nonPhoneNumberStringRepresentation(): iterable
+    public static function nonPhoneNumberStringRepresentation(): iterable
     {
         yield ['i am not a phone number'];
         yield [new stdClass()];
@@ -50,9 +51,7 @@ class PhoneNumberTransformerTest extends TestCase
         yield [11.123];
     }
 
-    /**
-     * @dataProvider nonPhoneNumberStringRepresentation
-     */
+    #[DataProvider('nonPhoneNumberStringRepresentation')]
     public function testReverseTransformShouldThrowOnNonPhoneNumberStringRepresentation($argument): void
     {
         $this->expectException(TransformationFailedException::class);

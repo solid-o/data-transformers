@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Solido\DataTransformers\Tests\Transformer;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Prophecy\PhpUnit\ProphecyTrait;
@@ -29,16 +30,14 @@ class MappingTransformerTest extends TestCase
         $this->transformer = new MappingTransformer($this->innerTransformer->reveal());
     }
 
-    public function provideEmptyValues(): iterable
+    public static function provideEmptyValues(): iterable
     {
         yield [null];
         yield [''];
         yield [[]];
     }
 
-    /**
-     * @dataProvider provideEmptyValues
-     */
+    #[DataProvider('provideEmptyValues')]
     public function testTransformShouldReturnEmptyArrayOnEmptyValues($value): void
     {
         $this->innerTransformer->transform(Argument::any())->shouldNotBeCalled();
@@ -46,18 +45,16 @@ class MappingTransformerTest extends TestCase
         self::assertEquals([], $this->transformer->transform($value));
     }
 
-    public function provideElements(): iterable
+    public static function provideElements(): iterable
     {
         yield [['we', 'are', 'the', 'elements', 123, [], new stdClass()]];
     }
 
-    /**
-     * @dataProvider provideElements
-     */
+    #[DataProvider('provideElements')]
     public function testTransformShouldCallInnerTransformForEachElement(array $elements): void
     {
         foreach ($elements as $element) {
-            $this->innerTransformer->transform($element)->shouldBeCalled();
+            $this->innerTransformer->transform($element)->shouldBeCalled()->willReturn($element);
         }
 
         $this->transformer->transform($elements);

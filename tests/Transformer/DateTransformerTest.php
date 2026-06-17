@@ -7,6 +7,7 @@ namespace Solido\DataTransformers\Tests\Transformer;
 use DateTimeImmutable;
 use DateTimeInterface;
 use Generator;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Solido\DataTransformers\Exception\TransformationFailedException;
 use Solido\DataTransformers\Transformer\DateTransformer;
@@ -24,13 +25,13 @@ class DateTransformerTest extends TestCase
         $this->transformer = new DateTransformer();
     }
 
-    public function provideEmptyValues(): iterable
+    public static function provideEmptyValues(): iterable
     {
         yield [null];
         yield [''];
     }
 
-    public function provideNonDateTimeInterfaceValues(): Generator
+    public static function provideNonDateTimeInterfaceValues(): Generator
     {
         yield ['2020a07a08'];
         yield ['i am not a phone number'];
@@ -40,24 +41,20 @@ class DateTransformerTest extends TestCase
         yield [[]];
     }
 
-    /**
-     * @dataProvider provideEmptyValues
-     */
+    #[DataProvider('provideEmptyValues')]
     public function testTransformShouldReturnNullOnEmptyValue(?string $value): void
     {
         self::assertNull($this->transformer->transform($value));
     }
 
-    public function provideInvalidTransformValues(): iterable
+    public static function provideInvalidTransformValues(): iterable
     {
-        foreach ($this->provideNonDateTimeInterfaceValues() as [$value]) {
+        foreach (self::provideNonDateTimeInterfaceValues() as [$value]) {
             yield [$value, is_string($value) ? 'Unexpected date format' : 'Expected a string'];
         }
     }
 
-    /**
-     * @dataProvider provideInvalidTransformValues
-     */
+    #[DataProvider('provideInvalidTransformValues')]
     public function testTransformShouldThrowOnInvalidValue($value, string $expectedExceptionMessage): void
     {
         $this->expectException(TransformationFailedException::class);
@@ -72,7 +69,7 @@ class DateTransformerTest extends TestCase
         self::assertEquals($now, $this->transformer->transform($now));
     }
 
-    public function provideDateAsStringValues(): Generator
+    public static function provideDateAsStringValues(): Generator
     {
         $now = new DateTimeImmutable('midnight');
 
@@ -84,9 +81,7 @@ class DateTransformerTest extends TestCase
         yield [new DateTimeImmutable('2023-03-02'), '30/02/2023'];
     }
 
-    /**
-     * @dataProvider provideDateAsStringValues
-     */
+    #[DataProvider('provideDateAsStringValues')]
     public function testTransformShouldAcceptDateAsString(DateTimeInterface $expected, string $dateAsString): void
     {
         self::assertEquals($expected, $this->transformer->transform($dateAsString));

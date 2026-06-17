@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Solido\DataTransformers\Tests\Transformer;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Prophecy\PhpUnit\ProphecyTrait;
@@ -33,18 +34,16 @@ class NullableMappingTransformerTest extends TestCase
         self::assertNull($this->transformer->transform(null));
     }
 
-    public function provideElements(): iterable
+    public static function provideElements(): iterable
     {
         yield [['we', 'are', 'the', 'elements', 123, [], new stdClass()]];
     }
 
-    /**
-     * @dataProvider provideElements
-     */
+    #[DataProvider('provideElements')]
     public function testTransformShouldCallInnerTransformForEachElement(array $elements): void
     {
         foreach ($elements as $element) {
-            $this->innerTransformer->transform($element)->shouldBeCalled();
+            $this->innerTransformer->transform($element)->shouldBeCalled()->willReturn($element);
         }
 
         $this->transformer->transform($elements);

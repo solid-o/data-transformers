@@ -13,9 +13,10 @@ use Solido\DataTransformers\TransformerInterface;
 use Throwable;
 
 use function checkdate;
+use function count;
 use function is_string;
 use function Safe\preg_match;
-use function Safe\sprintf;
+use function sprintf;
 
 class DateTimeTransformer implements TransformerInterface
 {
@@ -52,7 +53,8 @@ class DateTimeTransformer implements TransformerInterface
             return null;
         }
 
-        if (! preg_match('/^(\d{4})-(\d{2})-(\d{2})T\d{2}:\d{2}(?::\d{2})?(?:\.\d+)?(?:Z|(?:(?:\+|-)\d{2}:?\d{2}))$/', $value, $matches)) {
+        $matches = [];
+        if (! preg_match('/^(\d{4})-(\d{2})-(\d{2})T\d{2}:\d{2}(?::\d{2})?(?:\.\d+)?(?:Z|(?:(?:\+|-)\d{2}:?\d{2}))$/', $value, $matches) || $matches === null || count($matches) < 4) {
             throw new TransformationFailedException(sprintf('The date "%s" is not a valid date.', $value));
         }
 

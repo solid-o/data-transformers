@@ -11,7 +11,7 @@ use Solido\Pagination\PageToken;
 
 use function gettype;
 use function is_string;
-use function Safe\sprintf;
+use function sprintf;
 
 class PageTokenTransformer implements TransformerInterface
 {
