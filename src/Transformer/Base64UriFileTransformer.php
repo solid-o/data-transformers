@@ -25,7 +25,7 @@ use function urldecode;
  */
 class Base64UriFileTransformer implements TransformerInterface
 {
-    private const DATA_URI_PATTERN = '/^data:([a-z0-9][a-z0-9\!\#\$\&\-\^\_\+\.]{0,126}\/[a-z0-9][a-z0-9\!\#\$\&\-\^\_\+\.]{0,126})((?:;[a-z0-9\-]+=[^\/\\\?\*:\|\"<>;=]+)*?)?(;base64)?,([a-z0-9\!\$\&\\\'\,\(\)\*\+\,\;\=\-\.\_\~\:\@\/\?\%\s]*\s*)$/i';
+    private const string DATA_URI_PATTERN = '/^data:([a-z0-9][a-z0-9\!\#\$\&\-\^\_\+\.]{0,126}\/[a-z0-9][a-z0-9\!\#\$\&\-\^\_\+\.]{0,126})((?:;[a-z0-9\-]+=[^\/\\\?\*:\|\"<>;=]+)*?)?(;base64)?,([a-z0-9\!\$\&\\\'\,\(\)\*\+\,\;\=\-\.\_\~\:\@\/\?\%\s]*\s*)$/i';
 
     public function transform(mixed $value): object|null
     {

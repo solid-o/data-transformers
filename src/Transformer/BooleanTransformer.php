@@ -19,8 +19,8 @@ use function strtolower;
  */
 class BooleanTransformer implements TransformerInterface
 {
-    public const TRUE_VALUES = ['1', 'true', 'yes', 'on', 'y', 't'];
-    public const FALSE_VALUES = ['0', 'false', 'no', 'off', 'n', 'f'];
+    public const array TRUE_VALUES = ['1', 'true', 'yes', 'on', 'y', 't'];
+    public const array FALSE_VALUES = ['0', 'false', 'no', 'off', 'n', 'f'];
 
     /**
      * {@inheritDoc}

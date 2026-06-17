@@ -21,9 +21,6 @@ class Base64UriToPsr7FileTransformer extends Base64UriFileTransformer
     {
     }
 
-    /**
-     * {@inheritDoc}
-     */
     protected function shouldTransform(mixed $value): bool
     {
         return ! $value instanceof UploadedFileInterface;

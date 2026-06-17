@@ -71,9 +71,7 @@ class TransformerExtension implements ExtensionInterface
     private function getPropertyAttribute(ReflectionProperty $property): Transform|null
     {
         foreach ($property->getAttributes(Transform::class) as $attribute) {
-            $transform = $attribute->newInstance();
-
-            return $transform;
+            return $attribute->newInstance();
         }
 
         return null;
@@ -82,9 +80,7 @@ class TransformerExtension implements ExtensionInterface
     private function getMethodAttribute(ReflectionMethod $method): Transform|null
     {
         foreach ($method->getAttributes(Transform::class) as $attribute) {
-            $transform = $attribute->newInstance();
-
-            return $transform;
+            return $attribute->newInstance();
         }
 
             return null;
