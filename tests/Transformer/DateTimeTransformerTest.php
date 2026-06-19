@@ -28,6 +28,7 @@ class DateTimeTransformerTest extends TestCase
             ['UTC', '2010-02-03 05:06:00 UTC', '2010-02-03T05:06+0000'],
             ['Asia/Hong_Kong', '2010-02-03 04:05:00 America/New_York', '2010-02-03T17:05+08:00'],
             ['Europe/Amsterdam', '2013-08-21 10:30:00 Europe/Amsterdam', '2013-08-21T08:30:00Z'],
+            ['UTC', '2000-02-29 04:05:06 UTC', '2000-02-29T04:05:06Z'],
         ];
     }
 

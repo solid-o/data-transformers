@@ -34,6 +34,10 @@ class DateTransformerTest extends TestCase
     public static function provideNonDateTimeInterfaceValues(): Generator
     {
         yield ['2020a07a08'];
+        yield ['x28/01/2021'];
+        yield ['28/01/2021x'];
+        yield ['x2021-01-28'];
+        yield ['2021-01-28x'];
         yield ['i am not a phone number'];
         yield [1];
         yield [1.0];

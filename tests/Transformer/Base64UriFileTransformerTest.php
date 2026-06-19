@@ -79,4 +79,40 @@ class Base64UriFileTransformerTest extends TestCase
         self::assertStringEqualsFile(__DIR__ . '/../Fixtures/test.gif', $handle->fread($handle->getSize()));
         self::assertEquals('image/gif', $file->getMimeType());
     }
+
+    public function testShouldTransformCanBeOverridden(): void
+    {
+        $file = new File(__FILE__);
+        $transformer = new class extends Base64UriFileTransformer {
+            protected function shouldTransform(mixed $value): bool
+            {
+                return true;
+            }
+        };
+
+        $this->expectException(TransformationFailedException::class);
+
+        $transformer->transform($file);
+    }
+
+    public function testCreateFileCanBeOverridden(): void
+    {
+        $expected = new stdClass();
+        $transformer = new class($expected) extends Base64UriFileTransformer {
+            public function __construct(private object $file)
+            {
+            }
+
+            protected function createFile(string $data, string|null $originalName, string|null $mime): object
+            {
+                TestCase::assertSame("Kévin Dunglas\n", $data);
+                TestCase::assertNull($originalName);
+                TestCase::assertSame('text/plain', $mime);
+
+                return $this->file;
+            }
+        };
+
+        self::assertSame($expected, $transformer->transform(self::TEST_TXT_DATA));
+    }
 }

@@ -12,12 +12,11 @@ use Symfony\Component\HttpFoundation\File\File;
 
 use function array_column;
 use function array_map;
-use function count;
 use function explode;
 use function is_object;
 use function is_string;
+use function preg_match;
 use function Safe\base64_decode;
-use function Safe\preg_match;
 use function urldecode;
 
 /**
@@ -42,7 +41,7 @@ class Base64UriFileTransformer implements TransformerInterface
         }
 
         $matches = [];
-        if (! preg_match(self::DATA_URI_PATTERN, $value, $matches) || $matches === null || count($matches) < 5) {
+        if (preg_match(self::DATA_URI_PATTERN, $value, $matches) !== 1) {
             throw new TransformationFailedException('Invalid data: URI provided');
         }
 
